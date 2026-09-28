@@ -1,0 +1,21 @@
+# Python / environment
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ipynb_checkpoints/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Large or regenerable data (regenerate with the scripts; keep the CSVs that define the dataset)
+data/qr_images/
+data/distorted_test_images/
+models/*.joblib
+
+# Raw source downloads may carry their own licence terms - do not re-publish them
+data/raw/*
+!data/raw/.gitkeep

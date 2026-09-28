@@ -1,0 +1,32 @@
+# ScanSafely - Python dependencies
+# Tested target: Python 3.11 (3.10-3.12 should also work).
+# After a successful install, run:  pip freeze > requirements-lock.txt
+# and commit that lock file so the exact versions are recorded for reproducibility.
+
+# --- Data handling and machine learning ---
+numpy>=1.26,<3
+pandas>=2.1
+scikit-learn>=1.4
+joblib>=1.3
+
+# --- Images and QR codes ---
+opencv-python>=4.9        # image processing + built-in QR decoder (cv2.QRCodeDetector)
+Pillow>=10.0              # image loading/saving, JPEG compression distortions
+qrcode[pil]>=7.4          # generates QR images from URL strings (offline)
+
+# --- Explainability and plotting ---
+shap>=0.46
+matplotlib>=3.8
+seaborn>=0.13
+
+# --- Demo and testing ---
+streamlit>=1.35
+pytest>=8.0
+
+# --- OPTIONAL second decoder (not required) ---
+# pyzbar needs the system "zbar" library:
+#   macOS:  brew install zbar
+#   Ubuntu: sudo apt install libzbar0
+#   Windows: bundled in the wheel, but may need the Visual C++ 2013 redistributable
+# If you want it, uncomment the next line. The project works without it (OpenCV is the primary decoder).
+# pyzbar>=0.1.9
