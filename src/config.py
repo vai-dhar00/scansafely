@@ -104,7 +104,7 @@ N_PER_CLASS: int = 1000
 
 # Max URLs per registered domain at sampling time (D11). None = no cap.
 # Set ONCE from the domain inspection, before any split exists.
-DOMAIN_CAP: int | None = None
+DOMAIN_CAP: int | None = 10
 
 # ---------------------------------------------------------------------------
 # Data split (grouped, stratified by label). Pre-registered rules (D1, D12).

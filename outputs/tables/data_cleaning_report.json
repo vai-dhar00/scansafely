@@ -14,9 +14,10 @@
     "rows_out": 11416,
     "benign_out": 5715,
     "malicious_out": 5701,
-    "sample_unique_domains": 1465,
-    "sample_largest_domain_group": 70,
-    "sample_domains_with_5plus_urls": 29
+    "domain_cap": 10,
+    "sample_unique_domains": 1749,
+    "sample_largest_domain_group": 7,
+    "sample_domains_with_5plus_urls": 7
   },
   "output": "data/processed/urls.csv",
   "date": "2026-09-28"
