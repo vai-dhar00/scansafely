@@ -13,6 +13,7 @@ joblib>=1.3
 opencv-python>=4.9        # image processing + built-in QR decoder (cv2.QRCodeDetector)
 Pillow>=10.0              # image loading/saving, JPEG compression distortions
 qrcode[pil]>=7.4          # generates QR images from URL strings (offline)
+tldextract>=5.1           # registered domain from URL text; used with its BUNDLED suffix list (no download)
 
 # --- Explainability and plotting ---
 shap>=0.46

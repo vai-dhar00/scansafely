@@ -47,6 +47,7 @@ SCREENSHOTS_DIR: Path = OUTPUTS_DIR / "demo_screenshots"
 
 # Key files
 URLS_CSV: Path = PROCESSED_DIR / "urls.csv"                  # one row per original URL
+QR_MANIFEST_CSV: Path = PROCESSED_DIR / "qr_manifest.csv"    # one row per clean QR image
 FEATURES_CSV: Path = PROCESSED_DIR / "features.csv"          # one row per QR image
 ROBUSTNESS_CSV: Path = TABLES_DIR / "robustness_results.csv"
 EXPERIMENT_LOG: Path = OUTPUTS_DIR / "experiment_log.json"

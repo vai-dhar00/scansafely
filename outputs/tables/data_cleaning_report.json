@@ -10,9 +10,13 @@
     "dropped_over_2000_chars": 0,
     "dropped_conflicting_label_rows": 0,
     "dropped_exact_duplicates": 1,
-    "rows_out": 11426,
+    "dropped_canonical_duplicates": 10,
+    "rows_out": 11416,
     "benign_out": 5715,
-    "malicious_out": 5711
+    "malicious_out": 5701,
+    "sample_unique_domains": 1465,
+    "sample_largest_domain_group": 70,
+    "sample_domains_with_5plus_urls": 29
   },
   "output": "data/processed/urls.csv",
   "date": "2026-09-28"

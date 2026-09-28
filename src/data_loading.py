@@ -10,12 +10,51 @@ Pipeline:  raw CSV -> standardise columns/labels -> clean -> deduplicate
 from __future__ import annotations
 
 import json
+import re
 from datetime import date
 from pathlib import Path
+from urllib.parse import urlsplit, urlunsplit
 
 import pandas as pd
+import tldextract
 
 from src import config
+
+# OFFLINE public-suffix parser. suffix_list_urls=() forces the snapshot bundled with
+# the package; the default constructor would DOWNLOAD the list from the internet.
+_TLD = tldextract.TLDExtract(suffix_list_urls=(), cache_dir=None)
+_DEFAULT_PORTS = {"http": 80, "https": 443}
+
+
+def canonicalize_url(url: str) -> str:
+    """Deterministic canonical form used ONLY for duplicate checks and grouping.
+    The original string is kept separately and is what gets encoded in the QR.
+    Lowercases scheme + host, drops default ports, empty path -> '/'. Query and
+    fragment are left untouched. No network access."""
+    parts = urlsplit(url.strip())
+    scheme = parts.scheme.lower()
+    host = (parts.hostname or "").lower()
+    port = parts.port if parts.port and parts.port != _DEFAULT_PORTS.get(scheme) else None
+    netloc = host + (f":{port}" if port else "")
+    if parts.username:  # keep user-info (e.g. 'user@host'), a known phishing trick
+        netloc = parts.username + (f":{parts.password}" if parts.password else "") + "@" + netloc
+    return urlunsplit((scheme, netloc, parts.path or "/", parts.query, parts.fragment))
+
+
+def registered_domain(url: str) -> str:
+    """e.g. 'a.b.example.co.uk' -> 'example.co.uk'. IP hosts are returned as-is."""
+    host = (urlsplit(url.strip()).hostname or "").lower()
+    ext = _TLD(host)
+    return ext.top_domain_under_public_suffix or host
+
+
+def url_template(url: str) -> str:
+    """Host-free path/query 'shape' for near-duplicate audits (e.g. the same phishing
+    kit on different domains): digit runs of 3+ -> <N>, query values -> <V>."""
+    parts = urlsplit(canonicalize_url(url))
+    path = re.sub(r"\d{3,}", "<N>", parts.path.lower())
+    query = "&".join(sorted(p.split("=", 1)[0] + "=<V>" for p in parts.query.split("&") if p))
+    return path + ("?" + query if query else "")
 
 
 class DatasetError(Exception):
@@ -73,15 +112,23 @@ def clean_urls(df: pd.DataFrame) -> tuple[pd.DataFrame, dict[str, int]]:
     report["dropped_over_2000_chars"] = int(too_long.sum())
     df = df[~too_long]
 
+    # Duplicates and label conflicts are checked on the CANONICAL form, so
+    # 'HTTP://Example.com' and 'http://example.com/' count as the same URL.
+    df["canonical_url"] = df["url"].map(canonicalize_url)
+
     # Same URL with BOTH labels = contradictory ground truth -> remove every copy.
-    labels_per_url = df.groupby("url")["label"].nunique()
+    labels_per_url = df.groupby("canonical_url")["label"].nunique()
     conflicting = labels_per_url[labels_per_url > 1].index
-    report["dropped_conflicting_label_rows"] = int(df["url"].isin(conflicting).sum())
-    df = df[~df["url"].isin(conflicting)]
+    report["dropped_conflicting_label_rows"] = int(df["canonical_url"].isin(conflicting).sum())
+    df = df[~df["canonical_url"].isin(conflicting)]
 
     before = len(df)
     df = df.drop_duplicates(subset="url", keep="first")
     report["dropped_exact_duplicates"] = before - len(df)
+
+    before = len(df)
+    df = df.drop_duplicates(subset="canonical_url", keep="first")
+    report["dropped_canonical_duplicates"] = before - len(df)
 
     report["rows_out"] = len(df)
     report["benign_out"] = int((df["label"] == config.LABEL_BENIGN).sum())
@@ -114,9 +161,17 @@ def build_urls_csv(dataset: str | None = None) -> pd.DataFrame:
     sample = sample_balanced(cleaned, config.N_PER_CLASS, config.RANDOM_SEED)
 
     sample.insert(0, "original_qr_id", [f"Q{i:05d}" for i in range(len(sample))])
+    sample["registered_domain"] = sample["url"].map(registered_domain)  # Day 2 split group key
+    sample["url_template"] = sample["url"].map(url_template)            # near-duplicate audit
     sample["date_collected"] = date.today().isoformat()  # date the raw file was processed
     sample["split"] = ""                                 # assigned on Day 2, grouped + stratified
     sample.to_csv(config.URLS_CSV, index=False)
+
+    # Domain concentration: large domain groups make grouped splits lumpy (checked on Day 2).
+    per_domain = sample.groupby("registered_domain").size().sort_values(ascending=False)
+    report["sample_unique_domains"] = int(per_domain.size)
+    report["sample_largest_domain_group"] = int(per_domain.iloc[0])
+    report["sample_domains_with_5plus_urls"] = int((per_domain >= 5).sum())
 
     log = {
         "step": "build_urls_csv",
@@ -139,4 +194,9 @@ if __name__ == "__main__":
         raise SystemExit(f"ERROR: {err}")
     print(f"Wrote {config.URLS_CSV.relative_to(config.PROJECT_ROOT)} with {len(out)} rows")
     print(out["label"].map(config.LABEL_NAMES).value_counts().to_string())
+    rep = json.loads((config.TABLES_DIR / "data_cleaning_report.json").read_text())["cleaning_report"]
+    print(f"Canonical duplicates removed: {rep['dropped_canonical_duplicates']}")
+    print(f"Unique registered domains in sample: {rep['sample_unique_domains']} "
+          f"(largest group: {rep['sample_largest_domain_group']} URLs; "
+          f"domains with 5+ URLs: {rep['sample_domains_with_5plus_urls']})")
     print("Cleaning report: outputs/tables/data_cleaning_report.json")

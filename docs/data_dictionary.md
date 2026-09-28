@@ -16,6 +16,9 @@ Every row in `features.csv` links back to `urls.csv` through `original_qr_id`. *
 | `original_qr_id` | str | `Q000123` | Unique ID per URL string. Primary key. |
 | `url` | str | `https://example.com/a` | URL, stored as **inert text only**. Never opened, requested or resolved. |
 | `label` | int | `0` / `1` | 0 = benign, 1 = suspicious/malicious (label assigned by the source). |
+| `canonical_url` | str | `http://example.com/` | Lowercased scheme/host, default port removed, empty path -> `/`. Used ONLY for duplicate/conflict checks; the QR encodes the original `url`. |
+| `registered_domain` | str | `example.co.uk` | Offline public-suffix parse (tldextract, bundled list). Split group key on Day 2. IP hosts kept as-is. |
+| `url_template` | str | `/account/verify?id=<V>` | Host-free path/query shape (digit runs -> `<N>`, query values -> `<V>`) for the near-duplicate audit. |
 | `source` | str | `benign_list_A` | Short name of the dataset or list the URL came from (details in README). |
 | `date_collected` | str | `2026-09-28` | ISO date when the list was downloaded. Labels can go stale over time. |
 | `split` | str | `train` / `val` / `test` | Assigned once on Day 2 with `RANDOM_SEED`, grouped and stratified. The test split is frozen after this. |
@@ -43,6 +46,7 @@ These columns make decode failures visible instead of being silently dropped.
 | `decode_success` | int (0/1) | 1 if the local decoder returned a non-empty payload. |
 | `decoded_payload` | str | Decoded text (inert). Empty if decoding failed. |
 | `decoded_matches_original` | int (0/1) | 1 if `decoded_payload == url` exactly. |
+| `decode_outcome` | str | `exact` / `mismatch` / `failure`. A mismatch is NOT a success; classification metrics use `exact` only. |
 | `decoder_name` | str | e.g. `opencv`. Recorded so results are reproducible. |
 
 ### URL lexical features (computed from the **decoded** payload, as in the real pipeline; NaN if decoding failed)
