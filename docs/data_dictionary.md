@@ -76,20 +76,23 @@ These columns make decode failures visible instead of being silently dropped.
 
 Full ordered list: `URL_FEATURES` in `src/url_features.py` (30 features).
 
-### QR / image features (computed from the image pixels)
+### QR / image features (pixels only, D10/D13; full list: `QR_FEATURES` in `src/qr_features.py`)
 
-| Column | Type | Description |
+All pixel statistics are computed on a standardised 512x512 grayscale copy, so they do not depend on upload resolution.
+
+| Column | Role | Description |
 |---|---|---|
-| `qr_width`, `qr_height` | int | Image size in pixels. |
-| `qr_aspect_ratio` | float | Width divided by height. |
-| `qr_gray_mean`, `qr_gray_std` | float | Grayscale mean and standard deviation. |
-| `qr_dark_ratio` | float | Fraction of pixels below `DARK_PIXEL_THRESHOLD` (128). |
-| `qr_contrast` | float | Max minus min grayscale value, divided by 255. |
-| `qr_blur_score` | float | Variance of the Laplacian (higher means sharper). |
-| `qr_edge_density` | float | Fraction of Canny edge pixels. |
-| `qr_estimated_module_density` | float | Estimated modules per side (method documented in `qr_features.py`). |
-| `qr_version` | int | Version chosen by the generator (clean images only). **Descriptive only (D10): never a model input**, because it cannot be read from a distorted or uploaded image. |
-| `qr_quiet_zone_ratio` | float | Estimated blank border width divided by image width, if feasible. |
+| `qr_aspect_ratio` | model | Original width / height. |
+| `qr_gray_mean`, `qr_gray_std` | model | Grayscale mean and standard deviation (0-1). |
+| `qr_dark_ratio` | model | Fraction of pixels below `DARK_PIXEL_THRESHOLD` (128). |
+| `qr_contrast` | model | (99th - 1st percentile grey level) / 255. Robust to single noisy pixels. |
+| `qr_blur_score` | model | Variance of the Laplacian (higher = sharper). log1p before scaling. |
+| `qr_edge_density` | model | Fraction of Canny edge pixels. |
+| `qr_dark_component_density` | model | Dark connected blobs (Otsu threshold) per 10,000 px. log1p before scaling. |
+| `qr_quiet_zone_ratio` | model | Smallest blank margin around the dark content / image side. |
+| `qr_decoded_modules_per_side` | model | Size of the rectified code grid returned by the decoder (= 17 + 4 x version), read from pixels. NaN if decoding fails. log1p before scaling. |
+| `qr_width`, `qr_height` | descriptive | Original pixel size. Not a model input (depends on upload resolution). |
+| `qr_version_generator` | descriptive | Version chosen by the generator. Never a model input (D10). |
 
 ### Robustness-only columns (in `outputs/tables/robustness_results.csv`)
 

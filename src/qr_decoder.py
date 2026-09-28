@@ -24,6 +24,9 @@ class DecodeResult:
     success: bool
     payload: str          # "" when decoding failed
     decoder_name: str     # which detector succeeded, or "none"
+    # Modules per side of the rectified code the decoder read (17 + 4 x version).
+    # Read from the PIXELS by the decoder, so it is available for any decodable image (D13).
+    modules_per_side: float = float("nan")
 
 
 _DETECTORS = (
@@ -61,9 +64,10 @@ def decode_qr(source: str | Path | np.ndarray) -> DecodeResult:
     gray = load_image(source)
     for name, detector in _DETECTORS:
         try:
-            payload, points, _ = detector.detectAndDecode(gray)
+            payload, points, straight = detector.detectAndDecode(gray)
         except cv2.error:
             continue
         if payload:
-            return DecodeResult(True, payload, name)
+            modules = float(straight.shape[0]) if straight is not None and straight.size else float("nan")
+            return DecodeResult(True, payload, name, modules)
     return DecodeResult(False, "", "none")

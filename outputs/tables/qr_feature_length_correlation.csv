@@ -1,0 +1,14 @@
+feature,role,spearman_rho_with_url_length,n_unique_values
+qr_quiet_zone_ratio,model input,-0.976,20
+qr_decoded_modules_per_side,model input,0.976,19
+qr_width,descriptive only,0.976,19
+qr_height,descriptive only,0.976,19
+qr_version_generator,descriptive only,0.976,19
+qr_blur_score,model input,0.9506,2000
+qr_edge_density,model input,0.9506,1632
+qr_gray_mean,model input,-0.9085,1970
+qr_dark_ratio,model input,0.8875,1907
+qr_gray_std,model input,0.858,2000
+qr_dark_component_density,model input,0.5254,40
+qr_aspect_ratio,model input,,1
+qr_contrast,model input,,1

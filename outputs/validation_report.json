@@ -1,0 +1,102 @@
+{
+  "generated": "2026-09-28T16:08:55",
+  "overall": "PASS",
+  "checks": [
+    {
+      "check": "urls: expected row count",
+      "status": "PASS",
+      "detail": "2000 rows"
+    },
+    {
+      "check": "urls: original_qr_id unique",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "urls: url unique",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "urls: canonical_url unique",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "urls: labels are 0/1 only",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "urls: classes balanced",
+      "status": "PASS",
+      "detail": "{1: 1000, 0: 1000}"
+    },
+    {
+      "check": "urls: domain cap respected",
+      "status": "PASS",
+      "detail": "largest group 7 <= 10"
+    },
+    {
+      "check": "split: assigned",
+      "status": "INFO",
+      "detail": "not yet assigned (Day 2) - leakage checks skipped"
+    },
+    {
+      "check": "images: every QR image file exists",
+      "status": "PASS",
+      "detail": "0 missing"
+    },
+    {
+      "check": "images: one per URL",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "decode: all clean images exact match",
+      "status": "PASS",
+      "detail": "{'exact': 2000}"
+    },
+    {
+      "check": "features: one clean row per URL",
+      "status": "PASS",
+      "detail": "2000 rows"
+    },
+    {
+      "check": "features: all model feature columns present",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "features: generator QR version NOT a model feature (D10)",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "features: no missing URL features when decoded",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "features: split/label consistent with urls.csv",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "safety: no network/browser imports in project code",
+      "status": "PASS",
+      "detail": "clean"
+    },
+    {
+      "check": "provenance: hashes + config snapshot saved",
+      "status": "INFO",
+      "detail": "outputs/validation_report.json, outputs/config_snapshot.py"
+    }
+  ],
+  "sha256": {
+    "hannousse.csv": "21093e2902e5441c86a6daf95e86e7c332046e477fdf109a579d7bd81e586d6c",
+    "urls.csv": "6bea89f4a1800b76798f5f20828320bea9f8b4e8be172880c5f03384386b1597",
+    "qr_manifest.csv": "0bbcb43e9ad8277c36e53255d1810d918c75eaf96373297494e7340fb8217179",
+    "features.csv": "8f798aeeebbd5a793b64f8b2760dab2ecc21ee04352d74a128f93999f3aa2ae2"
+  }
+}
