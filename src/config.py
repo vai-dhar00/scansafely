@@ -71,6 +71,37 @@ LABEL_MALICIOUS: int = 1
 LABEL_NAMES: dict[int, str] = {LABEL_BENIGN: "benign", LABEL_MALICIOUS: "suspicious/malicious"}
 
 # ---------------------------------------------------------------------------
+# Raw datasets (Phase 2). Files are downloaded manually into data/raw/ and
+# renamed to the file names below. Label maps are EXPLICIT per dataset because
+# datasets disagree: PhiUSIIL uses 1 = legitimate, the opposite of our convention.
+# ---------------------------------------------------------------------------
+RAW_DATASETS: dict[str, dict] = {
+    "phiusiil": {
+        "file": "phiusiil.csv",
+        "url_column": "URL",
+        "label_column": "label",
+        # Source documentation (UCI): "Label 1 corresponds to a legitimate URL, label 0 to a phishing URL"
+        "label_map": {1: LABEL_BENIGN, 0: LABEL_MALICIOUS},
+        "citation": "Prasad & Chandra (2024), PhiUSIIL, Computers & Security 136:103545; UCI dataset 967, CC BY 4.0",
+    },
+    "hannousse": {
+        "file": "hannousse.csv",
+        "url_column": "url",
+        "label_column": "status",
+        "label_map": {"legitimate": LABEL_BENIGN, "phishing": LABEL_MALICIOUS},
+        "citation": "Hannousse & Yahiouche (2021), Web page phishing detection, Mendeley Data v3, doi:10.17632/c2gw7fy2j4.3",
+    },
+}
+
+# Which dataset builds urls.csv. Decided in Phase 2 from the URL-shape audit
+# (record the reason in docs/decisions_log.md).
+PRIMARY_DATASET: str = "hannousse"
+
+# Balanced sample size per class. 1,000 + 1,000 keeps QR generation and the
+# robustness experiment fast on a laptop while giving ~300 test URLs.
+N_PER_CLASS: int = 1000
+
+# ---------------------------------------------------------------------------
 # Data split (grouped by original_qr_id, stratified by label)
 # ---------------------------------------------------------------------------
 TRAIN_FRACTION: float = 0.70

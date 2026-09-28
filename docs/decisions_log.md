@@ -1,0 +1,12 @@
+# Decisions Log
+
+One entry per methodological decision. Write the entry **when** you make the decision, not afterwards.
+The Methods and Limitations sections of the poster are written from this file.
+
+| # | Date | Decision | Reason | Evidence / file |
+|---|---|---|---|---|
+| D1 | 2026-09-28 | Fixed seed 42. 70/15/15 split grouped by `original_qr_id`. Distortion levels fixed in `config.py` before any results. | Reproducibility; prevents choosing settings after seeing test results. | `src/config.py`, Phase 1 commit |
+| D2 | 2026-09-28 | Candidate datasets: PhiUSIIL (UCI 967) and Hannousse & Yahiouche (Mendeley, 2021). | Both are published and citable, both have raw URL strings with binary labels, and URLs can be handled offline. | `docs/data_sources.md` |
+| D3 | 2026-09-28 | Remove every copy of a URL that appears with conflicting labels. Remove exact duplicates. Drop URLs containing whitespace or longer than 2,000 characters. | Contradictory ground truth and duplicates inflate scores. Very long payloads are impractical as QR codes. | `outputs/tables/data_cleaning_report.json` |
+| D4 | 2026-09-28 | Balanced random sample of 1,000 URLs per class. | Keeps the robustness experiment tractable. Balancing makes F1 and recall easy to interpret. Limitation: it does not reflect real-world base rates. | `config.N_PER_CLASS` |
+| D5 | 2026-09-28 | Primary dataset = Hannousse & Yahiouche (2021). PhiUSIIL not used. | PhiUSIIL benign URLs are 100% bare homepages (0% with a path, 100% HTTPS), so path/scheme alone separate the classes. Real QR codes usually encode deep links. Hannousse benign URLs are varied (61% with a path). Residual length bias remains (length-only AUC 0.664 vs 0.721) and is tested on Day 2. | `outputs/tables/url_shape_audit.csv`, `outputs/figures/url_length_by_class.png` |

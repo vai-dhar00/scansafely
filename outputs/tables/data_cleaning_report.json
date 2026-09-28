@@ -1,0 +1,19 @@
+{
+  "step": "build_urls_csv",
+  "dataset": "hannousse",
+  "citation": "Hannousse & Yahiouche (2021), Web page phishing detection, Mendeley Data v3, doi:10.17632/c2gw7fy2j4.3",
+  "random_seed": 42,
+  "n_per_class": 1000,
+  "cleaning_report": {
+    "rows_in": 11430,
+    "dropped_empty_or_whitespace": 3,
+    "dropped_over_2000_chars": 0,
+    "dropped_conflicting_label_rows": 0,
+    "dropped_exact_duplicates": 1,
+    "rows_out": 11426,
+    "benign_out": 5715,
+    "malicious_out": 5711
+  },
+  "output": "data/processed/urls.csv",
+  "date": "2026-09-28"
+}

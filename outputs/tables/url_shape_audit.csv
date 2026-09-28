@@ -1,0 +1,5 @@
+dataset,class,n,length_median,length_p25,length_p75,pct_https,pct_has_path,pct_has_query,pct_bare_domain,pct_missing_scheme,length_only_auc
+phiusiil,benign,134850,27.0,24.0,30.0,100.0,0.0,0.0,100.0,0.0,0.721
+phiusiil,suspicious/malicious,100512,34.0,26.0,48.0,48.6,27.1,6.0,71.7,0.0,0.721
+hannousse,benign,5715,41.0,29.0,59.0,44.5,61.3,3.3,38.0,0.0,0.664
+hannousse,suspicious/malicious,5711,55.0,38.0,88.0,33.3,80.2,23.7,18.4,0.0,0.664
