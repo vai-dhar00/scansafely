@@ -22,7 +22,7 @@ from src import config
 
 # OFFLINE public-suffix parser. suffix_list_urls=() forces the snapshot bundled with
 # the package; the default constructor would DOWNLOAD the list from the internet.
-_TLD = tldextract.TLDExtract(suffix_list_urls=(), cache_dir=None)
+TLD_EXTRACT = tldextract.TLDExtract(suffix_list_urls=(), cache_dir=None)
 _DEFAULT_PORTS = {"http": 80, "https": 443}
 
 
@@ -44,7 +44,7 @@ def canonicalize_url(url: str) -> str:
 def registered_domain(url: str) -> str:
     """e.g. 'a.b.example.co.uk' -> 'example.co.uk'. IP hosts are returned as-is."""
     host = (urlsplit(url.strip()).hostname or "").lower()
-    ext = _TLD(host)
+    ext = TLD_EXTRACT(host)
     return ext.top_domain_under_public_suffix or host
 
 
@@ -136,8 +136,17 @@ def clean_urls(df: pd.DataFrame) -> tuple[pd.DataFrame, dict[str, int]]:
     return df.reset_index(drop=True), report
 
 
-def sample_balanced(df: pd.DataFrame, n_per_class: int, seed: int) -> pd.DataFrame:
-    """Draw the same number of URLs from each class, reproducibly."""
+def cap_per_domain(df: pd.DataFrame, cap: int, seed: int) -> pd.DataFrame:
+    """Keep at most `cap` randomly chosen (seeded) URLs per registered domain (D11)."""
+    shuffled = df.sample(frac=1, random_state=seed)
+    return shuffled.groupby("registered_domain", sort=False).head(cap).sort_index()
+
+
+def sample_balanced(df: pd.DataFrame, n_per_class: int, seed: int,
+                    domain_cap: int | None = None) -> pd.DataFrame:
+    """Draw the same number of URLs from each class, reproducibly (optionally domain-capped first)."""
+    if domain_cap is not None:
+        df = cap_per_domain(df, domain_cap, seed)
     parts = []
     for label in (config.LABEL_BENIGN, config.LABEL_MALICIOUS):
         pool = df[df["label"] == label]
@@ -158,10 +167,11 @@ def build_urls_csv(dataset: str | None = None) -> pd.DataFrame:
 
     raw = load_raw_dataset(dataset)
     cleaned, report = clean_urls(raw)
-    sample = sample_balanced(cleaned, config.N_PER_CLASS, config.RANDOM_SEED)
+    cleaned["registered_domain"] = cleaned["url"].map(registered_domain)  # Day 2 split group key
+    sample = sample_balanced(cleaned, config.N_PER_CLASS, config.RANDOM_SEED, config.DOMAIN_CAP)
+    report["domain_cap"] = config.DOMAIN_CAP
 
     sample.insert(0, "original_qr_id", [f"Q{i:05d}" for i in range(len(sample))])
-    sample["registered_domain"] = sample["url"].map(registered_domain)  # Day 2 split group key
     sample["url_template"] = sample["url"].map(url_template)            # near-duplicate audit
     sample["date_collected"] = date.today().isoformat()  # date the raw file was processed
     sample["split"] = ""                                 # assigned on Day 2, grouped + stratified

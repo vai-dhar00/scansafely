@@ -55,8 +55,9 @@ These columns make decode failures visible instead of being silently dropped.
 |---|---|---|
 | `url_length` | int | Total characters. |
 | `url_hostname_length` | int | Characters in the hostname. |
+| `url_path_length`, `url_query_length` | int | Characters in the path / query string. |
 | `url_dot_count` | int | Number of `.` in the whole URL. |
-| `url_subdomain_count` | int | Hostname labels minus 2 (floored at 0). A simple approximation: it does not use the Public Suffix List, so `a.co.uk` is overcounted. This is documented as a limitation. |
+| `url_subdomain_count` | int | Labels in the subdomain part, using the public suffix list bundled with tldextract (offline). `login.secure.example.co.uk` gives 2. 0 for IP hosts. |
 | `url_hyphen_count` | int | Number of `-`. |
 | `url_digit_count` | int | Number of digits. |
 | `url_digit_ratio` | float | Digits divided by length. |
@@ -65,11 +66,15 @@ These columns make decode failures visible instead of being silently dropped.
 | `url_path_depth` | int | Non-empty path segments. |
 | `url_query_param_count` | int | Number of query parameters. |
 | `url_has_https` | int (0/1) | Scheme is `https`. |
-| `url_has_ip` | int (0/1) | Hostname is an IPv4 address. |
+| `url_has_ip` | int (0/1) | Hostname is an IPv4 or IPv6 address. |
 | `url_has_punycode` | int (0/1) | Contains `xn--`. |
+| `url_has_nonstandard_port` | int (0/1) | Explicit port other than 80/443. |
+| `url_has_double_slash_path` | int (0/1) | `//` inside the path (a redirection trick). |
 | `url_entropy` | float | Shannon entropy (bits per character) of the URL string. |
 | `url_suspicious_token_count` | int | Number of distinct tokens from `config.SUSPICIOUS_TOKENS` found. |
-| `url_has_token_<word>` | int (0/1) | Flags for selected tokens (e.g. `login`, `verify`, `account`). |
+| `url_has_token_<word>` | int (0/1) | Flags for `login`, `verify`, `account`, `secure`, `update`, `bank`. |
+
+Full ordered list: `URL_FEATURES` in `src/url_features.py` (30 features).
 
 ### QR / image features (computed from the image pixels)
 
@@ -83,7 +88,7 @@ These columns make decode failures visible instead of being silently dropped.
 | `qr_blur_score` | float | Variance of the Laplacian (higher means sharper). |
 | `qr_edge_density` | float | Fraction of Canny edge pixels. |
 | `qr_estimated_module_density` | float | Estimated modules per side (method documented in `qr_features.py`). |
-| `qr_version` | int or NaN | **Only filled if reliably obtained.** For clean generated images, we know the version from the generator. For distorted images it is left NaN rather than guessed. |
+| `qr_version` | int | Version chosen by the generator (clean images only). **Descriptive only (D10): never a model input**, because it cannot be read from a distorted or uploaded image. |
 | `qr_quiet_zone_ratio` | float | Estimated blank border width divided by image width, if feasible. |
 
 ### Robustness-only columns (in `outputs/tables/robustness_results.csv`)

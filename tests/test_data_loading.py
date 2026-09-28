@@ -63,3 +63,13 @@ def test_url_template_ignores_host_digits_and_query_values():
     a = url_template("http://one.example/account/verify?id=12345&s=a")
     b = url_template("http://two.example/account/verify?s=zz&id=67890")
     assert a == b == "/account/verify?id=<V>&s=<V>"
+
+
+def test_domain_cap_limits_urls_per_domain():
+    df = _frame([(f"https://big.example/{i}", 1) for i in range(30)] +
+                [(f"https://m{i}.example/", 1) for i in range(30)] +
+                [(f"https://b{i}.example/", 0) for i in range(40)])
+    df["registered_domain"] = df["url"].map(registered_domain)
+    s = sample_balanced(df, 20, config.RANDOM_SEED, domain_cap=5)
+    assert s.groupby("registered_domain").size().max() <= 5
+    assert s["label"].value_counts().to_dict() == {0: 20, 1: 20}

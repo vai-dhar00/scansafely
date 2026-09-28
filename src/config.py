@@ -102,12 +102,44 @@ PRIMARY_DATASET: str = "hannousse"
 # robustness experiment fast on a laptop while giving ~300 test URLs.
 N_PER_CLASS: int = 1000
 
+# Max URLs per registered domain at sampling time (D11). None = no cap.
+# Set ONCE from the domain inspection, before any split exists.
+DOMAIN_CAP: int | None = None
+
 # ---------------------------------------------------------------------------
-# Data split (grouped by original_qr_id, stratified by label)
+# Data split (grouped, stratified by label). Pre-registered rules (D1, D12).
 # ---------------------------------------------------------------------------
 TRAIN_FRACTION: float = 0.70
 VAL_FRACTION: float = 0.15
 TEST_FRACTION: float = 0.15
+
+# Split groups = registered domain, merged with repeated NON-TRIVIAL URL templates.
+# Non-trivial: not "/" and (non-root path OR query keys). Merge a template if it occurs
+# >= TEMPLATE_GROUP_MIN_COUNT times; skip templates larger than TEMPLATE_GROUP_MAX_SIZE
+# (e.g. "/index.html" everywhere is generic, not a leak) and report them instead.
+TEMPLATE_GROUP_MIN_COUNT: int = 3
+TEMPLATE_GROUP_MAX_SIZE: int = 30
+
+# Candidate grouped splits scored by an objective function; lowest score wins.
+# score = |test_frac-0.15| + |val_frac-0.15| + |test_mal_frac-0.5| + |val_mal_frac-0.5|
+N_SPLIT_CANDIDATES: int = 500
+
+# ---------------------------------------------------------------------------
+# Preprocessing policy (fixed before training)
+# ---------------------------------------------------------------------------
+# D9: count/length features -> log1p -> StandardScaler; flags, ratios, entropy -> StandardScaler.
+#     (The list of log1p features lives in src/url_features.py as URL_LOG1P_FEATURES.)
+# Training-only filter: drop a feature with zero variance in TRAIN, or a 0/1 flag with
+# fewer than this many positive cases in TRAIN. Never decided from val/test.
+MIN_BINARY_POSITIVES_TRAIN: int = 2
+
+# ---------------------------------------------------------------------------
+# Length-matched sensitivity subset (test split only; re-score, never retrain)
+# ---------------------------------------------------------------------------
+# Pooled URL-length quantile bins; use the largest bin count from this tuple for which
+# every retained bin keeps >= LENGTH_MATCH_MIN_PER_CLASS cases per class; else the last.
+LENGTH_MATCH_BIN_OPTIONS: tuple[int, ...] = (10, 8, 5)
+LENGTH_MATCH_MIN_PER_CLASS: int = 5
 
 # ---------------------------------------------------------------------------
 # Risk-label policy for the demo.
