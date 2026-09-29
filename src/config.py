@@ -120,9 +120,34 @@ TEST_FRACTION: float = 0.15
 TEMPLATE_GROUP_MIN_COUNT: int = 3
 TEMPLATE_GROUP_MAX_SIZE: int = 30
 
-# Candidate grouped splits scored by an objective function; lowest score wins.
-# score = |test_frac-0.15| + |val_frac-0.15| + |test_mal_frac-0.5| + |val_mal_frac-0.5|
+# Candidate grouped splits (D12, refined D15): candidate i uses seed RANDOM_SEED + i.
+# score = sum over train/val/test of |size_frac - target| + |malicious_frac - 0.5|
+#         + 10 if any split lacks a class + 10 if any split size is off target by > tolerance
+#         + 1  if one group exceeds 10% of val or test.  Lowest score wins; ties -> lowest index.
 N_SPLIT_CANDIDATES: int = 500
+SPLIT_SIZE_TOLERANCE: float = 0.02
+SPLIT_MAX_GROUP_SHARE: float = 0.10
+
+# ---------------------------------------------------------------------------
+# Day 2 modelling protocol (D14) - fixed BEFORE the split is created
+# ---------------------------------------------------------------------------
+# Models: constant-negative/positive refs, M1 (url_length), M1+QR, E1 (URL), E2 (QR),
+# E3 (URL+QR), E3-reducedQR (supplementary). All Logistic Regression.
+LR_C_GRID: tuple[float, ...] = (0.01, 0.1, 1.0, 10.0)
+CV_FOLDS: int = 5                 # grouped (D12 group id), TRAIN split only, scored by F1
+CV_TIE_DECIMALS: int = 4          # equal mean F1 after rounding -> choose the SMALLER C
+FINAL_FIT: str = "train_only"     # threshold + calibration + test all use the same fitted model
+# Thresholds, all chosen on VALIDATION only. Primary = highest threshold with
+# malicious recall >= 0.90 and FPR <= 0.50; fallback = validation F1-optimal.
+# Always also reported: fixed 0.50 and F1-optimal.
+THRESHOLD_MIN_RECALL: float = 0.90
+THRESHOLD_MAX_FPR: float = 0.50
+# E3-reducedQR keeps QR features with |Spearman rho with url_length| <= this, computed on TRAIN.
+REDUCED_QR_MAX_ABS_RHO: float = 0.90
+# Uncertainty: cluster bootstrap over D12 groups on the frozen test set (URL-level = sensitivity).
+BOOTSTRAP_RESAMPLES: int = 2000
+# Exact McNemar for E3 vs E1, M1+QR vs M1, E2 vs M1 at primary thresholds; Holm-adjusted.
+MCNEMAR_ADJUSTMENT: str = "holm"
 
 # ---------------------------------------------------------------------------
 # Preprocessing policy (fixed before training)

@@ -64,6 +64,17 @@ def run_validation() -> bool:
         doms = urls.groupby("registered_domain")["split"].nunique()
         _check("split: no registered domain in >1 split", (doms <= 1).all(), f"{int((doms > 1).sum())} leaking domains")
         _check("split: fractions", None, urls["split"].value_counts(normalize=True).round(3).to_dict().__str__())
+        manifest_path = config.PROCESSED_DIR / "split_manifest.csv"
+        freeze_path = config.TABLES_DIR / "split_freeze.json"
+        test_ids_path = config.PROCESSED_DIR / "test_ids_frozen.csv"
+        if manifest_path.exists():
+            man = pd.read_csv(manifest_path)
+            grp = man.groupby("split_group_id")["split"].nunique()
+            _check("split: no split group (domain+template) in >1 split", (grp <= 1).all(),
+                   f"{int((grp > 1).sum())} leaking groups")
+        if freeze_path.exists() and test_ids_path.exists():
+            frozen = json.loads(freeze_path.read_text())["test_ids_sha256"]
+            _check("split: frozen test ids unchanged (SHA-256)", _sha256(test_ids_path) == frozen)
 
     # --- Images and clean decoding
     manifest = pd.read_csv(config.QR_MANIFEST_CSV)
