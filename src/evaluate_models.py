@@ -192,23 +192,39 @@ def length_matched_subset(test: pd.DataFrame) -> tuple[pd.DataFrame, dict]:
 
 
 # --------------------------------------------------------------------------- figures
-def plot_model_comparison(ci: pd.DataFrame) -> None:
+def plot_model_comparison(ci: pd.DataFrame, test_metrics: pd.DataFrame) -> None:
+    """D18: model QUALITY = ROC-AUC with cluster-bootstrap CI (threshold-free);
+    OPERATING POINT = recall shown next to FPR at each model's locked threshold."""
     order = ["M1_length_only", "E2_qr_only", "M1_plus_QR", "E1_url_only", "E3_fusion", "E3_reducedQR"]
-    fig, axes = plt.subplots(1, 2, figsize=(11, 4.6), sharey=True)
-    for ax, metric, title in zip(axes, ("f1", "recall_malicious"), ("F1", "Malicious-class recall")):
-        sub = ci[(ci["metric"] == metric) & ci["model_or_difference"].isin(order)].set_index("model_or_difference").loc[order]
-        y = np.arange(len(order))
-        ax.errorbar(sub["point"], y, xerr=[sub["point"] - sub["ci95_low"], sub["ci95_high"] - sub["point"]],
-                    fmt="o", color=BLUE, ecolor=BLUE, elinewidth=2, capsize=4, markersize=8)
-        for yi, v, hi in zip(y, sub["point"], sub["ci95_high"]):
-            ax.text(min(hi + 0.02, 1.0), yi, f"{v:.2f}", va="center", fontsize=10)
-        ax.set_yticks(y, order, fontsize=11)
-        ax.set_xlim(0, 1.1)
-        ax.set_title(title, fontsize=13, loc="left")
+    y = np.arange(len(order))
+    fig, (a1, a2) = plt.subplots(1, 2, figsize=(12, 4.8), sharey=True, gridspec_kw={"width_ratios": [1.1, 1]})
+
+    auc = ci[(ci["metric"] == "roc_auc") & ci["model_or_difference"].isin(order)].set_index("model_or_difference").loc[order]
+    a1.axvline(0.5, color="#999999", linestyle="--", linewidth=1)
+    a1.errorbar(auc["point"], y, xerr=[auc["point"] - auc["ci95_low"], auc["ci95_high"] - auc["point"]],
+                fmt="o", color=BLUE, ecolor=BLUE, elinewidth=2, capsize=4, markersize=8)
+    for yi, v, lo, hi in zip(y, auc["point"], auc["ci95_low"], auc["ci95_high"]):
+        if hi > 0.92:  # no room on the right: label on the left of the interval
+            a1.text(lo - 0.01, yi, f"{v:.3f}", va="center", ha="right", fontsize=10)
+        else:
+            a1.text(hi + 0.01, yi, f"{v:.3f}", va="center", fontsize=10)
+    a1.set_xlim(0.4, 1.0)
+    a1.set_title("Model quality: ROC-AUC (95% cluster-bootstrap CI)", fontsize=12, loc="left")
+
+    op = test_metrics[(test_metrics["threshold_view"] == "primary")].set_index("model").loc[order]
+    a2.hlines(y, op["fpr"], op["recall_malicious"], color="#c3c2b7", linewidth=2)
+    a2.plot(op["recall_malicious"], y, "o", color=BLUE, markersize=8, label="malicious recall")
+    a2.plot(op["fpr"], y, "D", color=ORANGE, markersize=7, label="false-positive rate")
+    a2.set_xlim(0, 1.05)
+    a2.set_title("Operating point at each model's locked threshold", fontsize=12, loc="left")
+    a2.legend(frameon=False, fontsize=10, loc="upper center", bbox_to_anchor=(0.5, -0.1), ncol=2)
+
+    a1.set_yticks(y, order, fontsize=11)
+    a1.invert_yaxis()
+    for ax in (a1, a2):
         ax.grid(axis="x", alpha=0.25)
         ax.spines[["top", "right"]].set_visible(False)
-    axes[0].invert_yaxis()
-    fig.suptitle("Frozen test set · primary threshold · 95% cluster-bootstrap CI", fontsize=13, x=0.01, ha="left")
+    fig.suptitle("Frozen test set (n = 300)", fontsize=13, x=0.01, ha="left")
     fig.tight_layout()
     fig.savefig(config.FIGURES_DIR / "model_comparison.png", dpi=200)
     plt.close(fig)
@@ -290,7 +306,7 @@ def evaluate() -> dict:
     (config.TABLES_DIR / "length_matched_meta.json").write_text(json.dumps(meta, indent=2))
 
     error_analysis(test, preds).to_csv(config.TABLES_DIR / "error_analysis_E3.csv", index=False)
-    plot_model_comparison(ci_cluster)
+    plot_model_comparison(ci_cluster, metrics)
     plot_confusion(metrics)
     plot_length_matched(metrics, lm_metrics)
 
@@ -300,8 +316,20 @@ def evaluate() -> dict:
     return {"metrics": metrics, "ci": ci_cluster, "mcnemar": mc, "lm": lm_metrics, "meta": meta}
 
 
+def redraw_figures() -> None:
+    """Rebuild figures from SAVED result tables only (no model scoring)."""
+    metrics = pd.read_csv(config.TABLES_DIR / "test_metrics.csv")
+    plot_model_comparison(pd.read_csv(config.TABLES_DIR / "bootstrap_ci_cluster.csv"), metrics)
+    plot_confusion(metrics)
+    plot_length_matched(metrics, pd.read_csv(config.TABLES_DIR / "length_matched_metrics.csv"))
+
+
 if __name__ == "__main__":
+    import sys
     warnings.filterwarnings("ignore", message=r".*encountered in matmul", category=RuntimeWarning)
+    if "--figures-only" in sys.argv:
+        redraw_figures()
+        raise SystemExit("Figures redrawn from saved tables (no evaluation re-run).")
     r = evaluate()
     pd.set_option("display.width", 200)
     prim = r["metrics"][r["metrics"]["threshold_view"].isin(["primary", "n/a"])]
