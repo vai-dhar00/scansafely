@@ -1,0 +1,4 @@
+comparison,a_right_b_wrong,a_wrong_b_right,p_exact,p_holm
+E2_qr_only vs M1_length_only,12,28,0.0166,0.0498
+M1_plus_QR vs M1_length_only,13,28,0.0275,0.0551
+E3_fusion vs E1_url_only,3,9,0.146,0.146

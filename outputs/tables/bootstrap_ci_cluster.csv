@@ -1,0 +1,37 @@
+model_or_difference,metric,point,ci95_low,ci95_high,valid_draws
+M1_length_only,f1,0.6895,0.6237,0.7482,2000
+M1_length_only,recall_malicious,0.8733,0.8125,0.9286,2000
+M1_length_only,precision,0.5696,0.4916,0.6402,2000
+M1_length_only,roc_auc,0.6614,0.5898,0.7274,2000
+M1_plus_QR,f1,0.6811,0.6184,0.7348,2000
+M1_plus_QR,recall_malicious,0.9467,0.9065,0.9804,2000
+M1_plus_QR,precision,0.5318,0.4612,0.5985,2000
+M1_plus_QR,roc_auc,0.6697,0.6034,0.7339,2000
+E1_url_only,f1,0.7766,0.7097,0.8299,2000
+E1_url_only,recall_malicious,0.7533,0.6716,0.8269,2000
+E1_url_only,precision,0.8014,0.7273,0.8681,2000
+E1_url_only,roc_auc,0.863,0.8187,0.9025,2000
+E2_qr_only,f1,0.6794,0.6183,0.7344,2000
+E2_qr_only,recall_malicious,0.9467,0.9065,0.9804,2000
+E2_qr_only,precision,0.5299,0.4612,0.597,2000
+E2_qr_only,roc_auc,0.6688,0.6016,0.7326,2000
+E3_fusion,f1,0.7625,0.6931,0.8171,2000
+E3_fusion,recall_malicious,0.76,0.6781,0.8333,2000
+E3_fusion,precision,0.7651,0.6828,0.8345,2000
+E3_fusion,roc_auc,0.8585,0.8112,0.8988,2000
+E3_reducedQR,f1,0.7666,0.7089,0.8164,2000
+E3_reducedQR,recall_malicious,0.8867,0.8312,0.9348,2000
+E3_reducedQR,precision,0.6751,0.5989,0.7455,2000
+E3_reducedQR,roc_auc,0.8612,0.8164,0.9008,2000
+E3_fusion - E1_url_only,f1,-0.0141,-0.0382,0.0091,2000
+E3_fusion - E1_url_only,recall_malicious,0.0067,-0.0207,0.0365,2000
+E3_fusion - E1_url_only,roc_auc,-0.0045,-0.0123,0.0027,2000
+M1_plus_QR - M1_length_only,f1,-0.0084,-0.037,0.021,2000
+M1_plus_QR - M1_length_only,recall_malicious,0.0733,0.034,0.1157,2000
+M1_plus_QR - M1_length_only,roc_auc,0.0083,-0.021,0.0366,2000
+E2_qr_only - M1_length_only,f1,-0.01,-0.0387,0.019,2000
+E2_qr_only - M1_length_only,recall_malicious,0.0733,0.034,0.1157,2000
+E2_qr_only - M1_length_only,roc_auc,0.0073,-0.0235,0.0365,2000
+E3_reducedQR - E1_url_only,f1,-0.0101,-0.0579,0.0372,2000
+E3_reducedQR - E1_url_only,recall_malicious,0.1333,0.0769,0.1933,2000
+E3_reducedQR - E1_url_only,roc_auc,-0.0018,-0.0104,0.0063,2000

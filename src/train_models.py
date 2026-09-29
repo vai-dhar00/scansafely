@@ -197,6 +197,10 @@ def train_all() -> dict:
         C, cv = select_C(train, kept)
         pipe = build_pipeline(kept, C).fit(train[kept], y_tr)
         p_val = pipe.predict_proba(val[kept])[:, 1]
+        # Guard: the matmul RuntimeWarnings seen on macOS/Accelerate are silenced below,
+        # so we PROVE numerical soundness instead of trusting silence.
+        coef = pipe[-1].coef_
+        assert np.isfinite(coef).all() and np.isfinite(p_val).all(), f"{name}: non-finite coefficients/scores"
         thr = choose_thresholds(y_val, p_val)
         calib[name] = calibration_stats(y_val, p_val)
 
@@ -231,6 +235,8 @@ def train_all() -> dict:
 
 if __name__ == "__main__":
     warnings.filterwarnings("ignore", category=UserWarning)
+    # Spurious on Apple Silicon (NumPy 2 + Accelerate); soundness is asserted per model above.
+    warnings.filterwarnings("ignore", message=r".*encountered in matmul", category=RuntimeWarning)
     m = train_all()
     print(f"\nReduced-QR model keeps: {m['reduced_qr']['reduced_qr_kept']}")
     print("\nSaved: models/*.joblib, outputs/model_manifest.json, outputs/tables/validation_metrics.csv,")
