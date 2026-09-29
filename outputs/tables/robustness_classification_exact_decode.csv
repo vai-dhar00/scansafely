@@ -1,0 +1,19 @@
+distortion_type,distortion_severity,attempted,E1_url_only_cond_recall,E1_url_only_cond_fpr,E1_url_only_cond_f1,E1_url_only_cond_status,E3_fusion_cond_recall,E3_fusion_cond_fpr,E3_fusion_cond_f1,E3_fusion_cond_status
+none,clean,300,0.7533,0.1867,0.7766,ok,0.76,0.2333,0.7625,ok
+gaussian_blur,mild,300,0.7533,0.1867,0.7766,ok,0.7333,0.1933,0.7612,ok
+gaussian_blur,moderate,300,0.7533,0.1867,0.7766,ok,0.8,0.3,0.7619,ok
+gaussian_blur,strong,300,0.7533,0.1867,0.7766,ok,0.9133,0.48,0.7632,ok
+rotation,-15,300,0.7533,0.1867,0.7766,ok,1.0,0.9667,0.6742,ok
+rotation,-10,300,0.7533,0.1867,0.7766,ok,0.9933,0.7667,0.7198,ok
+rotation,-5,300,0.7533,0.1867,0.7766,ok,0.92,0.4867,0.7645,ok
+rotation,+5,300,0.7533,0.1867,0.7766,ok,0.92,0.4867,0.7645,ok
+rotation,+10,300,0.7533,0.1867,0.7766,ok,0.9933,0.7667,0.7198,ok
+rotation,+15,300,0.7533,0.1867,0.7766,ok,1.0,0.9667,0.6742,ok
+jpeg,q90,300,0.7533,0.1867,0.7766,ok,0.7733,0.2333,0.7708,ok
+jpeg,q60,300,0.7533,0.1867,0.7766,ok,0.7867,0.26,0.7687,ok
+jpeg,q30,300,0.7533,0.1867,0.7766,ok,0.8067,0.3067,0.7634,ok
+low_resolution,mild,300,0.7533,0.1867,0.7766,ok,0.76,0.2333,0.7625,ok
+low_resolution,moderate,300,0.7533,0.1867,0.7766,ok,0.76,0.2333,0.7625,ok
+low_resolution,strong,300,0.5517,0.193,0.5714,exploratory (<30/class),1.0,1.0,0.5043,exploratory (<30/class)
+perspective,mild,300,0.7533,0.1867,0.7766,ok,0.8467,0.3733,0.7628,ok
+perspective,moderate,300,0.7533,0.1867,0.7766,ok,0.9133,0.46,0.7697,ok

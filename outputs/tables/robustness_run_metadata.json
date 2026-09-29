@@ -1,0 +1,62 @@
+{
+  "run": "2026-09-29T23:55:55",
+  "random_seed": 42,
+  "frozen_test_ids_sha256": "f7881714c3949a102cbabff782ee5c8270b4234179320ead78a8040d393d301c",
+  "model_sha256": {
+    "E1_url_only": "7b2a476f2999f9a636fb8b2cb5691e0a077b8238da63019610a156fc43ddc179",
+    "E3_fusion": "f13725cd1ef55944dd71439bea8b035b150d60501d90672cd1e08f99eb0f5d74"
+  },
+  "locked_thresholds": {
+    "E1_url_only": 0.489756,
+    "E3_fusion": 0.463022
+  },
+  "decoder_policy": "OpenCV QRCodeDetector, then QRCodeDetectorAruco only if the first returns nothing; no preprocessing; outcome exact/mismatch/failure; only exact is classified (D6, D21)",
+  "distortion_settings": {
+    "gaussian_blur": {
+      "mild": 3,
+      "moderate": 7,
+      "strong": 11
+    },
+    "rotation": {
+      "-15": -15,
+      "-10": -10,
+      "-5": -5,
+      "+5": 5,
+      "+10": 10,
+      "+15": 15
+    },
+    "jpeg": {
+      "q90": 90,
+      "q60": 60,
+      "q30": 30
+    },
+    "low_resolution": {
+      "mild": 0.5,
+      "moderate": 0.3,
+      "strong": 0.15
+    },
+    "perspective": {
+      "mild": 0.05,
+      "moderate": 0.1
+    }
+  },
+  "distortion_implementation": {
+    "rotation": "about centre, white fill, canvas expanded to fit (no cropping)",
+    "perspective": "keystone: top-left corner -> (frac*w, 0), top-right -> (w - frac*w, 0), bottom corners fixed",
+    "low_resolution": "INTER_AREA down, INTER_NEAREST up; controlled digital degradation, not a camera model",
+    "jpeg": "encode + decode in memory with OpenCV at the given quality",
+    "occlusion": "excluded from core study (D19)"
+  },
+  "total_images_attempted": 5400,
+  "runtime_minutes": 2.8,
+  "e1_determinism_check": "passed",
+  "config_snapshot": "outputs/config_snapshot.py",
+  "package_versions": {
+    "python": "3.10.0",
+    "numpy": "2.2.6",
+    "pandas": "2.3.3",
+    "scikit-learn": "1.7.2",
+    "opencv": "5.0.0",
+    "matplotlib": "3.10.9"
+  }
+}
