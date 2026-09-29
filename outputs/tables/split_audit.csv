@@ -1,0 +1,4 @@
+split,n,fraction,n_benign,n_malicious,n_groups,largest_group,n_domains
+train,1400,0.7,700,700,1199,13,1225
+val,300,0.15,150,150,258,7,264
+test,300,0.15,150,150,260,4,260

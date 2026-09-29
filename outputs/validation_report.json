@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-28T16:08:55",
+  "generated": "2026-09-29T11:30:36",
   "overall": "PASS",
   "checks": [
     {
@@ -38,9 +38,29 @@
       "detail": "largest group 7 <= 10"
     },
     {
-      "check": "split: assigned",
+      "check": "split: every row assigned",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "split: no registered domain in >1 split",
+      "status": "PASS",
+      "detail": "0 leaking domains"
+    },
+    {
+      "check": "split: fractions",
       "status": "INFO",
-      "detail": "not yet assigned (Day 2) - leakage checks skipped"
+      "detail": "{'train': 0.7, 'test': 0.15, 'val': 0.15}"
+    },
+    {
+      "check": "split: no split group (domain+template) in >1 split",
+      "status": "PASS",
+      "detail": "0 leaking groups"
+    },
+    {
+      "check": "split: frozen test ids unchanged (SHA-256)",
+      "status": "PASS",
+      "detail": ""
     },
     {
       "check": "images: every QR image file exists",
@@ -95,8 +115,8 @@
   ],
   "sha256": {
     "hannousse.csv": "21093e2902e5441c86a6daf95e86e7c332046e477fdf109a579d7bd81e586d6c",
-    "urls.csv": "6bea89f4a1800b76798f5f20828320bea9f8b4e8be172880c5f03384386b1597",
+    "urls.csv": "ef2ed2a27396d46221e963d419609bd3e91f668ce81d3db4240dffb49f9a840b",
     "qr_manifest.csv": "0bbcb43e9ad8277c36e53255d1810d918c75eaf96373297494e7340fb8217179",
-    "features.csv": "8f798aeeebbd5a793b64f8b2760dab2ecc21ee04352d74a128f93999f3aa2ae2"
+    "features.csv": "50286d9d091c00c4e3eff60d2b4e2cac4f015de0cc7db032df3e405153afa4d4"
   }
 }

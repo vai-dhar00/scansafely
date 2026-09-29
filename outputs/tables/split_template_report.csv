@@ -1,0 +1,13 @@
+url_template,n_urls,n_benign,n_malicious,action,test,train,val
+/<N>/?sec=<V>,4,0,4,merged,0,4,0
+/away.php?amp;cc_key=<V>&amp;post=<V>&to=<V>,3,0,3,merged,3,0,0
+/blog/profile/,3,0,3,merged,0,3,0
+/cs/,7,0,7,merged,0,7,0
+/customer_center/user-<N>/,3,0,3,merged,0,3,0
+/home.html,3,0,3,merged,0,3,0
+/img/,5,0,5,merged,0,5,0
+/index.php,3,2,1,merged,0,3,0
+/login.php,9,0,9,merged,0,9,0
+/pages/responsepage.aspx?id=<V>,4,0,4,merged,0,4,0
+/wp-content/themes/twentyfifteen/css/read/chinavali/index.php?email=<V>,5,0,5,merged,0,5,0
+/~u<N>p<N>/pki-validation,7,0,7,merged,0,0,7
