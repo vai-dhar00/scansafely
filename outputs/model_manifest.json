@@ -1,0 +1,259 @@
+{
+  "protocol": "D14",
+  "final_fit": "train_only",
+  "n_train": 1400,
+  "n_val": 300,
+  "reduced_qr": {
+    "reduced_qr_kept": [
+      "qr_gray_std",
+      "qr_dark_ratio",
+      "qr_dark_component_density"
+    ],
+    "train_spearman_with_url_length": {
+      "qr_aspect_ratio": NaN,
+      "qr_gray_mean": -0.9068,
+      "qr_gray_std": 0.8564,
+      "qr_dark_ratio": 0.8836,
+      "qr_contrast": NaN,
+      "qr_blur_score": 0.9469,
+      "qr_edge_density": 0.9467,
+      "qr_dark_component_density": 0.506,
+      "qr_quiet_zone_ratio": -0.9742,
+      "qr_decoded_modules_per_side": 0.9742
+    }
+  },
+  "models": {
+    "M1_length_only": {
+      "features_used": [
+        "url_length"
+      ],
+      "features_dropped": {},
+      "C": 0.01,
+      "cv_mean_f1": 0.558,
+      "thresholds": {
+        "primary": 0.421603,
+        "f1_optimal": 0.421603,
+        "fixed_0.50": 0.5
+      },
+      "primary_rule": "fallback: F1-optimal (recall/FPR target infeasible)",
+      "val_auc": 0.6408,
+      "val_brier": 0.2346,
+      "val_ece": 0.0296,
+      "model_sha256": "56d2b04b4d6c652c58822c988b799b6d951c3ff1ac30926d8d12825c13ed0247"
+    },
+    "M1_plus_QR": {
+      "features_used": [
+        "url_length",
+        "qr_gray_mean",
+        "qr_gray_std",
+        "qr_dark_ratio",
+        "qr_blur_score",
+        "qr_edge_density",
+        "qr_dark_component_density",
+        "qr_quiet_zone_ratio",
+        "qr_decoded_modules_per_side"
+      ],
+      "features_dropped": {
+        "qr_aspect_ratio": "zero variance in train",
+        "qr_contrast": "zero variance in train"
+      },
+      "C": 10.0,
+      "cv_mean_f1": 0.5759,
+      "thresholds": {
+        "primary": 0.304425,
+        "f1_optimal": 0.304425,
+        "fixed_0.50": 0.5
+      },
+      "primary_rule": "fallback: F1-optimal (recall/FPR target infeasible)",
+      "val_auc": 0.6323,
+      "val_brier": 0.2362,
+      "val_ece": 0.0496,
+      "model_sha256": "6f40f3af57b5002529712f24ca23b9c167397bbfa272a6ca7773a09639108aca"
+    },
+    "E1_url_only": {
+      "features_used": [
+        "url_length",
+        "url_hostname_length",
+        "url_path_length",
+        "url_query_length",
+        "url_dot_count",
+        "url_subdomain_count",
+        "url_hyphen_count",
+        "url_digit_count",
+        "url_digit_ratio",
+        "url_special_char_count",
+        "url_at_count",
+        "url_question_count",
+        "url_equals_count",
+        "url_ampersand_count",
+        "url_percent_count",
+        "url_path_depth",
+        "url_query_param_count",
+        "url_has_https",
+        "url_has_ip",
+        "url_has_punycode",
+        "url_has_double_slash_path",
+        "url_entropy",
+        "url_suspicious_token_count",
+        "url_has_token_login",
+        "url_has_token_verify",
+        "url_has_token_account",
+        "url_has_token_secure",
+        "url_has_token_update",
+        "url_has_token_bank"
+      ],
+      "features_dropped": {
+        "url_has_nonstandard_port": "zero variance in train"
+      },
+      "C": 0.1,
+      "cv_mean_f1": 0.7572,
+      "thresholds": {
+        "primary": 0.489756,
+        "f1_optimal": 0.489756,
+        "fixed_0.50": 0.5
+      },
+      "primary_rule": "fallback: F1-optimal (recall/FPR target infeasible)",
+      "val_auc": 0.83,
+      "val_brier": 0.1692,
+      "val_ece": 0.0708,
+      "model_sha256": "7b2a476f2999f9a636fb8b2cb5691e0a077b8238da63019610a156fc43ddc179"
+    },
+    "E2_qr_only": {
+      "features_used": [
+        "qr_gray_mean",
+        "qr_gray_std",
+        "qr_dark_ratio",
+        "qr_blur_score",
+        "qr_edge_density",
+        "qr_dark_component_density",
+        "qr_quiet_zone_ratio",
+        "qr_decoded_modules_per_side"
+      ],
+      "features_dropped": {
+        "qr_aspect_ratio": "zero variance in train",
+        "qr_contrast": "zero variance in train"
+      },
+      "C": 10.0,
+      "cv_mean_f1": 0.5831,
+      "thresholds": {
+        "primary": 0.301628,
+        "f1_optimal": 0.301628,
+        "fixed_0.50": 0.5
+      },
+      "primary_rule": "fallback: F1-optimal (recall/FPR target infeasible)",
+      "val_auc": 0.6263,
+      "val_brier": 0.2376,
+      "val_ece": 0.051,
+      "model_sha256": "84936dc0bf2e09115a1dd0fbd3bcb08e44e476b2cbd274c300360660941afec0"
+    },
+    "E3_fusion": {
+      "features_used": [
+        "url_length",
+        "url_hostname_length",
+        "url_path_length",
+        "url_query_length",
+        "url_dot_count",
+        "url_subdomain_count",
+        "url_hyphen_count",
+        "url_digit_count",
+        "url_digit_ratio",
+        "url_special_char_count",
+        "url_at_count",
+        "url_question_count",
+        "url_equals_count",
+        "url_ampersand_count",
+        "url_percent_count",
+        "url_path_depth",
+        "url_query_param_count",
+        "url_has_https",
+        "url_has_ip",
+        "url_has_punycode",
+        "url_has_double_slash_path",
+        "url_entropy",
+        "url_suspicious_token_count",
+        "url_has_token_login",
+        "url_has_token_verify",
+        "url_has_token_account",
+        "url_has_token_secure",
+        "url_has_token_update",
+        "url_has_token_bank",
+        "qr_gray_mean",
+        "qr_gray_std",
+        "qr_dark_ratio",
+        "qr_blur_score",
+        "qr_edge_density",
+        "qr_dark_component_density",
+        "qr_quiet_zone_ratio",
+        "qr_decoded_modules_per_side"
+      ],
+      "features_dropped": {
+        "url_has_nonstandard_port": "zero variance in train",
+        "qr_aspect_ratio": "zero variance in train",
+        "qr_contrast": "zero variance in train"
+      },
+      "C": 0.1,
+      "cv_mean_f1": 0.7575,
+      "thresholds": {
+        "primary": 0.463022,
+        "f1_optimal": 0.463022,
+        "fixed_0.50": 0.5
+      },
+      "primary_rule": "fallback: F1-optimal (recall/FPR target infeasible)",
+      "val_auc": 0.8304,
+      "val_brier": 0.1692,
+      "val_ece": 0.0683,
+      "model_sha256": "f13725cd1ef55944dd71439bea8b035b150d60501d90672cd1e08f99eb0f5d74"
+    },
+    "E3_reducedQR": {
+      "features_used": [
+        "url_length",
+        "url_hostname_length",
+        "url_path_length",
+        "url_query_length",
+        "url_dot_count",
+        "url_subdomain_count",
+        "url_hyphen_count",
+        "url_digit_count",
+        "url_digit_ratio",
+        "url_special_char_count",
+        "url_at_count",
+        "url_question_count",
+        "url_equals_count",
+        "url_ampersand_count",
+        "url_percent_count",
+        "url_path_depth",
+        "url_query_param_count",
+        "url_has_https",
+        "url_has_ip",
+        "url_has_punycode",
+        "url_has_double_slash_path",
+        "url_entropy",
+        "url_suspicious_token_count",
+        "url_has_token_login",
+        "url_has_token_verify",
+        "url_has_token_account",
+        "url_has_token_secure",
+        "url_has_token_update",
+        "url_has_token_bank",
+        "qr_gray_std",
+        "qr_dark_ratio",
+        "qr_dark_component_density"
+      ],
+      "features_dropped": {
+        "url_has_nonstandard_port": "zero variance in train"
+      },
+      "C": 1.0,
+      "cv_mean_f1": 0.7658,
+      "thresholds": {
+        "primary": 0.282025,
+        "f1_optimal": 0.49604,
+        "fixed_0.50": 0.5
+      },
+      "primary_rule": "recall>=0.90 & FPR<=0.50",
+      "val_auc": 0.8307,
+      "val_brier": 0.1709,
+      "val_ece": 0.0905,
+      "model_sha256": "86276592a2b94513a3a2dc9a59da025dd6d494d38464d46df0fefe80f1591a6b"
+    }
+  }
+}

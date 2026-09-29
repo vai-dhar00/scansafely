@@ -1,0 +1,7 @@
+model,brier,ece
+M1_length_only,0.2346,0.0296
+M1_plus_QR,0.2362,0.0496
+E1_url_only,0.1692,0.0708
+E2_qr_only,0.2376,0.051
+E3_fusion,0.1692,0.0683
+E3_reducedQR,0.1709,0.0905
