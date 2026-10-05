@@ -7,6 +7,8 @@ from src import explainability as ex
 from src.train_models import build_pipeline
 from src.url_features import URL_FEATURES, extract_url_features
 
+pytestmark = pytest.mark.filterwarnings("ignore:.*encountered in matmul:RuntimeWarning")
+
 
 def _synthetic_bundle(n=400, seed=0):
     rng = np.random.default_rng(seed)
@@ -95,3 +97,24 @@ def test_no_network_or_browser_imports():
     src = pathlib.Path(ex.__file__).read_text()
     for bad in ("import requests", "import urllib.request", "import webbrowser", "import socket", "import http"):
         assert bad not in src
+
+
+def test_offsetting_feature_is_not_shown_against_its_group():
+    contrib = pd.Series({f: 0.0 for f in URL_FEATURES})
+    z = pd.Series({f: 1.0 for f in URL_FEATURES})
+    feats = {f: 0.0 for f in URL_FEATURES}
+    # keyword group: count raises strongly, one flag lowers -> ONE combined sentence, net raises
+    contrib["url_suspicious_token_count"] = 1.5
+    contrib["url_has_token_account"] = -0.4
+    feats.update(url_suspicious_token_count=5, url_has_token_login=1, url_has_token_account=1)
+    # character-mix group: net positive, special-char count opposes -> hidden
+    contrib["url_digit_count"] = 1.0
+    contrib["url_special_char_count"] = -0.3
+    # group whose net effect is ~0 -> its features hidden
+    contrib["url_path_depth"] = 0.5
+    contrib["url_query_param_count"] = -0.48
+    raising, lowering = ex.build_factor_sentences(feats, z, contrib)
+    text = " ".join(raising + lowering)
+    assert sum("Watch-list words" in r for r in raising) == 1 and "'account'" in text and not lowering
+    assert "special characters" not in text and "digits" in text
+    assert "Path depth" not in text and "query parameters" not in text

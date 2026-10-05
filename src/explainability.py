@@ -24,7 +24,7 @@ import numpy as np
 import pandas as pd
 
 from src import config
-from src.url_features import extract_url_features
+from src.url_features import TOKEN_FLAGS, extract_url_features
 
 MAX_URL_CHARS = 2000          # training data was cleaned to <= 2,000 characters (D3/D25)
 MAX_DISPLAY_CHARS = 500       # payload display is truncated for the screen only
@@ -163,6 +163,40 @@ def _sentence(feat: str, raw: float, z: float, contrib: float) -> str:
     return f"{label}: {fmt(raw)} ({side} the training average). This {effect} the risk score."
 
 
+def build_factor_sentences(feats: dict[str, float], z: pd.Series, contrib: pd.Series) -> tuple[list[str], list[str]]:
+    """Plain-language 'raising' / 'lowering' lists.
+
+    Correlated features get offsetting weights (D24), so a single feature can point AGAINST the
+    net direction of its group (e.g. one keyword flag 'lowers' while the keyword count 'raises').
+    Showing those reads as a contradiction, so:
+      - a feature sentence is shown only if it agrees in sign with its group's net contribution
+        and the group's net effect is itself >= MIN_FACTOR_LOGIT;
+      - the keyword group is summarised in ONE sentence (words found + group effect).
+    Group totals are always shown separately by the app and are exact."""
+    gnet: dict[str, float] = {}
+    for f, c in contrib.items():
+        gnet[GROUP_OF[f]] = gnet.get(GROUP_OF[f], 0.0) + float(c)
+
+    items: list[tuple[float, str]] = []  # (signed contribution used for ranking, sentence)
+    kw_net = gnet.get("Keywords", 0.0)
+    if abs(kw_net) >= MIN_FACTOR_LOGIT:
+        found = [t for t in TOKEN_FLAGS if feats.get(f"url_has_token_{t}", 0) >= 0.5]
+        words = ", ".join(f"'{t}'" for t in found) if found else "none of the tracked words"
+        n_all = int(feats.get("url_suspicious_token_count", 0))
+        items.append((kw_net, f"Watch-list words: {words} ({n_all} found in total). "
+                              f"Together, the keyword features {'raise' if kw_net > 0 else 'lower'} the risk score."))
+    for f, c in contrib.items():
+        g = GROUP_OF[f]
+        if g == "Keywords" or abs(c) < MIN_FACTOR_LOGIT or abs(gnet[g]) < MIN_FACTOR_LOGIT:
+            continue
+        if np.sign(c) != np.sign(gnet[g]):
+            continue
+        items.append((float(c), _sentence(f, feats[f], float(z[f]), float(c))))
+    raising = [t for c, t in sorted(items, key=lambda x: -x[0]) if c > 0][:TOP_FACTORS]
+    lowering = [t for c, t in sorted(items, key=lambda x: x[0]) if c < 0][:TOP_FACTORS]
+    return raising, lowering
+
+
 def explain_url(url: str, bundle: dict) -> Explanation:
     """Score one http(s) URL with E1 and explain it. Caller must have checked classify_payload == 'url'."""
     feats = extract_url_features(url)
@@ -176,11 +210,7 @@ def explain_url(url: str, bundle: dict) -> Explanation:
     groups = {g: 0.0 for g in FEATURE_GROUPS}
     for f, c in contrib.items():
         groups[GROUP_OF[f]] += float(c)
-
-    ranked = contrib.sort_values()
-    big = ranked[ranked.abs() >= MIN_FACTOR_LOGIT]
-    raising = [_sentence(f, feats[f], Z.iloc[0][f], c) for f, c in big[big > 0].sort_values(ascending=False).head(TOP_FACTORS).items()]
-    lowering = [_sentence(f, feats[f], Z.iloc[0][f], c) for f, c in big[big < 0].head(TOP_FACTORS).items()]
+    raising, lowering = build_factor_sentences(feats, Z.iloc[0], contrib)
 
     band = config.probability_to_risk_label(score)
     return Explanation(score=score, band=band, recommendation=config.RISK_RECOMMENDATIONS[band], logit=logit,
@@ -203,3 +233,14 @@ def analyse_payload(payload: str | None, decoder_name: str | None, bundle: dict)
     return {**base, "status": STATUS_FALLBACK if fallback else STATUS_COMPLETE, "payload_display": shown,
             "explanation": expl, "message": None, "caveat": EXPLANATION_CAVEAT,
             "correlation_note": CORRELATION_NOTE, "score_note": SCORE_NOTE}
+
+
+if __name__ == "__main__":
+    # Prints E1's locked coefficients (standardised space) so unintuitive signs can be inspected
+    # and reported honestly. Descriptive only: nothing is retrained or changed.
+    b = load_e1()
+    Z, coef, icpt = transformed_parts(b, pd.DataFrame([extract_url_features("https://example.com/")]))
+    tab = pd.DataFrame({"group": [GROUP_OF[f] for f in coef.index], "coef": coef.round(3)}, index=coef.index)
+    print(f"intercept {icpt:.3f}\n")
+    print(tab.sort_values(["group", "coef"]).to_string())
+    print("\nGroup sums of |coef|:", tab.assign(a=tab.coef.abs()).groupby("group").a.sum().round(2).to_dict())
