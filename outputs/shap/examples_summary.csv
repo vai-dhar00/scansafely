@@ -1,0 +1,5 @@
+cell,score,band,intercept,group: URL length and size,group: Character mix,group: URL structure,group: Connection and host type,group: Keywords
+benign -> LOW RISK (correct),0.16,LOW RISK,0.359,0.52,-1.25,-0.51,-0.47,-0.31
+malicious -> HIGH RISK (correct),0.952,HIGH RISK,0.359,1.39,0.73,-1.5,0.19,1.83
+benign -> HIGH RISK (false alarm),0.753,HIGH RISK,0.359,-0.18,0.75,0.31,0.19,-0.31
+malicious -> LOW RISK (miss),0.228,LOW RISK,0.359,-1.4,-1.06,1.0,0.19,-0.31

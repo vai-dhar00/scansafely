@@ -25,7 +25,7 @@ def get_model() -> dict:
     return ex.load_e1()          # refuses to run if the model file differs from its locked hash
 
 
-st.title("ScanSafely")
+st.title("ScanSafely", anchor=False)
 st.caption("Evaluating URL and QR-Image Signals for Pre-Navigation Quishing Risk Screening")
 st.info(f"**Prototype notice.** {config.DISCLAIMER} Everything runs locally: the QR code is decoded on this "
         "machine, the link is never opened, and nothing is uploaded, saved or logged.")
@@ -72,7 +72,7 @@ if upload is not None:
             st.caption(res["score_note"])
             st.markdown(f"**Recommendation:** {e.recommendation}")
 
-            st.subheader("Why this result?")
+            st.subheader("Why this result?", anchor=False)
             st.markdown("**What pushed the score up or down, by feature group** "
                         "(positive = raises the risk score; log-odds units)")
             names, vals = zip(*sorted(e.group_contributions.items(), key=lambda kv: kv[1]))

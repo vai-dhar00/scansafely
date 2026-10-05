@@ -1,0 +1,30 @@
+feature,group,logit_contribution
+url_path_depth,URL structure,0.8499914869717097
+url_path_length,URL length and size,-0.4749552801158209
+url_subdomain_count,URL structure,-0.4072520950856472
+url_entropy,Character mix,0.33951337242596413
+url_hostname_length,URL length and size,0.2785310620604626
+url_suspicious_token_count,Keywords,-0.25135288874569767
+url_has_https,Connection and host type,0.2207191534224084
+url_digit_count,Character mix,0.15849590982669517
+url_dot_count,Character mix,0.12289962545702482
+url_length,URL length and size,0.10694993143262219
+url_query_length,URL length and size,-0.08966195646628565
+url_digit_ratio,Character mix,0.08862183264862382
+url_equals_count,URL structure,-0.07764088512533056
+url_hyphen_count,Character mix,0.06554002001331355
+url_has_token_login,Keywords,-0.0545112904800611
+url_at_count,Character mix,-0.05358896775217236
+url_question_count,URL structure,-0.04816027622652747
+url_percent_count,Character mix,0.020452488070072553
+url_has_ip,Connection and host type,-0.020108229819238207
+url_has_token_account,Keywords,0.01683899449549783
+url_has_double_slash_path,URL structure,-0.014739873625185609
+url_has_token_update,Keywords,-0.011682214303252104
+url_has_punycode,Connection and host type,-0.010198118258755372
+url_has_token_secure,Keywords,-0.008547700608977736
+url_ampersand_count,URL structure,0.007938424192093205
+url_special_char_count,Character mix,0.007746256660149984
+url_has_token_bank,Keywords,0.007069598959575169
+url_has_token_verify,Keywords,-0.0061945979795254
+url_query_param_count,URL structure,-0.004690313406025729
