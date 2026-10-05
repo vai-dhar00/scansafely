@@ -1,0 +1,5 @@
+cell,n_in_cell,score,image_path,payload,original_qr_id
+benign -> LOW RISK (correct),86,0.16,data/qr_images/Q00690.png,https://www.google.nu/?gws_rd=ssl,Q00690
+malicious -> HIGH RISK (correct),80,0.952,data/qr_images/Q00347.png,http://joinchatgrupwhatsapp31.mrbonus.com/,Q00347
+benign -> HIGH RISK (false alarm),8,0.753,data/qr_images/Q01078.png,http://www.sciencebuddies.org/Files/2081/5/PopsicleBridgeBlueprint_smaller.pdf,Q01078
+malicious -> LOW RISK (miss),16,0.228,data/qr_images/Q00210.png,http://cort.as/-FgvH,Q00210

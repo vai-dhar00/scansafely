@@ -1,0 +1,9 @@
+[browser]
+gatherUsageStats = false
+
+[server]
+maxUploadSize = 5
+headless = true
+
+[client]
+toolbarMode = "minimal"
