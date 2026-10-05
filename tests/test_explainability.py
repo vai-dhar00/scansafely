@@ -113,8 +113,22 @@ def test_offsetting_feature_is_not_shown_against_its_group():
     # group whose net effect is ~0 -> its features hidden
     contrib["url_path_depth"] = 0.5
     contrib["url_query_param_count"] = -0.48
-    raising, lowering = ex.build_factor_sentences(feats, z, contrib)
+    raising, lowering = ex.build_factor_sentences(feats, z, contrib, ["login", "account"])
     text = " ".join(raising + lowering)
     assert sum("Watch-list words" in r for r in raising) == 1 and "'account'" in text and not lowering
     assert "special characters" not in text and "digits" in text
     assert "Path depth" not in text and "query parameters" not in text
+
+
+def test_keyword_sentence_names_the_words_the_model_counted(synth):
+    bundle, _, _ = synth
+    e = ex.explain_url("http://joinchat-mrbonus.example.com/", bundle)       # 'bonus' matches inside 'mrbonus'
+    kw = [t for t in e.raising + e.lowering if "watch-list" in t.lower()]
+    assert all("none of the tracked" not in t for t in kw)
+    e2 = ex.explain_url("http://login-verify-bank.example.com/", bundle)
+    kw2 = " ".join(t for t in e2.raising + e2.lowering if "watch-list" in t.lower())
+    assert "'login'" in kw2 and "'verify'" in kw2 and "'bank'" in kw2
+
+
+def test_character_wording_singular():
+    assert ex.LABELS["url_path_length"][1](1) == "1 character" and ex.LABELS["url_path_length"][1](2) == "2 characters"

@@ -24,7 +24,7 @@ import numpy as np
 import pandas as pd
 
 from src import config
-from src.url_features import TOKEN_FLAGS, extract_url_features
+from src.url_features import extract_url_features
 
 MAX_URL_CHARS = 2000          # training data was cleaned to <= 2,000 characters (D3/D25)
 MAX_DISPLAY_CHARS = 500       # payload display is truncated for the screen only
@@ -60,7 +60,7 @@ GROUP_OF = {f: g for g, fs in FEATURE_GROUPS.items() for f in fs}
 
 # (plain label, value formatter). Wording describes what the MODEL does, never what a feature "means".
 _N = lambda v: f"{v:.0f}"
-_CH = lambda v: f"{v:.0f} characters"
+_CH = lambda v: f"{v:.0f} character" + ("" if round(v) == 1 else "s")
 _YN = lambda v: "yes" if v >= 0.5 else "no"
 LABELS: dict[str, tuple[str, callable]] = {
     "url_length": ("Total URL length", _CH), "url_hostname_length": ("Domain name length", _CH),
@@ -163,7 +163,8 @@ def _sentence(feat: str, raw: float, z: float, contrib: float) -> str:
     return f"{label}: {fmt(raw)} ({side} the training average). This {effect} the risk score."
 
 
-def build_factor_sentences(feats: dict[str, float], z: pd.Series, contrib: pd.Series) -> tuple[list[str], list[str]]:
+def build_factor_sentences(feats: dict[str, float], z: pd.Series, contrib: pd.Series,
+                           found_words: list[str]) -> tuple[list[str], list[str]]:
     """Plain-language 'raising' / 'lowering' lists.
 
     Correlated features get offsetting weights (D24), so a single feature can point AGAINST the
@@ -180,11 +181,10 @@ def build_factor_sentences(feats: dict[str, float], z: pd.Series, contrib: pd.Se
     items: list[tuple[float, str]] = []  # (signed contribution used for ranking, sentence)
     kw_net = gnet.get("Keywords", 0.0)
     if abs(kw_net) >= MIN_FACTOR_LOGIT:
-        found = [t for t in TOKEN_FLAGS if feats.get(f"url_has_token_{t}", 0) >= 0.5]
-        words = ", ".join(f"'{t}'" for t in found) if found else "none of the tracked words"
-        n_all = int(feats.get("url_suspicious_token_count", 0))
-        items.append((kw_net, f"Watch-list words: {words} ({n_all} found in total). "
-                              f"Together, the keyword features {'raise' if kw_net > 0 else 'lower'} the risk score."))
+        words = ("Watch-list words found in the URL text: " + ", ".join(f"'{t}'" for t in found_words)
+                 if found_words else "No watch-list words found in the URL text")
+        items.append((kw_net, f"{words}. Together, the keyword features "
+                              f"{'raise' if kw_net > 0 else 'lower'} the risk score."))
     for f, c in contrib.items():
         g = GROUP_OF[f]
         if g == "Keywords" or abs(c) < MIN_FACTOR_LOGIT or abs(gnet[g]) < MIN_FACTOR_LOGIT:
@@ -210,7 +210,11 @@ def explain_url(url: str, bundle: dict) -> Explanation:
     groups = {g: 0.0 for g in FEATURE_GROUPS}
     for f, c in contrib.items():
         groups[GROUP_OF[f]] += float(c)
-    raising, lowering = build_factor_sentences(feats, Z.iloc[0], contrib)
+    # Same expression the feature extractor uses (substring match on the 15-word watch-list), so the words
+    # we name are exactly the ones the model's keyword count saw.
+    found_words = [t for t in config.SUSPICIOUS_TOKENS if t in url.lower()]
+    assert len(found_words) == int(feats["url_suspicious_token_count"])
+    raising, lowering = build_factor_sentences(feats, Z.iloc[0], contrib, found_words)
 
     band = config.probability_to_risk_label(score)
     return Explanation(score=score, band=band, recommendation=config.RISK_RECOMMENDATIONS[band], logit=logit,
