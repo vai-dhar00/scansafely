@@ -1,0 +1,10 @@
+condition,analysis_set,n_exact,mean_logit_shift_URL_group,mean_logit_shift_QR_group,benign_FPR_clean_same_images,benign_FPR_distorted
+clean,full test set,300,0.0,0.0,0.2333,0.2333
+blur strong,full test set,300,0.0,0.9432,0.2333,0.48
+jpeg q30,full test set,300,0.0,0.2284,0.2333,0.3067
+perspective 10%,full test set,300,0.0,0.8961,0.2333,0.46
+rotation +5,full test set,300,0.0,0.926,0.2333,0.4867
+rotation +15,full test set,300,0.0,2.5265,0.2333,0.9667
+pad_like_rot15 (control),full test set,300,0.0,1.6318,0.2333,0.74
+low-res mild,full test set,300,0.0,0.0,0.2333,0.2333
+low-res strong,"survivor subset (86/300, paired)",86,0.0,3.5469,0.2632,1.0

@@ -1,0 +1,7 @@
+{
+  "rotation_15_QR_logit_shift": 2.5265,
+  "padding_only_QR_logit_shift": 1.6318,
+  "share_explained_by_padding": 0.646,
+  "verdict": "most",
+  "rule": "<10% none, 10-60% part, >60% most (fixed before running)"
+}
