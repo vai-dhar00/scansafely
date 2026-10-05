@@ -47,7 +47,7 @@ def check_config() -> bool:
     try:
         from src import config
         config.ensure_directories()
-        assert config.probability_to_risk_label(0.10) == "SAFE"
+        assert config.probability_to_risk_label(0.10) == "LOW RISK"
         assert config.probability_to_risk_label(0.30) == "SUSPICIOUS"
         assert config.probability_to_risk_label(0.70) == "HIGH RISK"
         print(f"[OK  ] src/config.py loaded; seed={config.RANDOM_SEED}; folders created")

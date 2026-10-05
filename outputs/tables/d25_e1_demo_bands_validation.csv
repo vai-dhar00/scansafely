@@ -1,4 +1,4 @@
 band,n,n_malicious,n_benign,share_malicious,pct_of_all_malicious,pct_of_all_benign
-SAFE,93,20,73,0.215,0.133,0.487
+LOW RISK,93,20,73,0.215,0.133,0.487
 SUSPICIOUS,107,44,63,0.411,0.293,0.42
 HIGH RISK,100,86,14,0.86,0.573,0.093

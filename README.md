@@ -19,7 +19,7 @@ We do **not** claim to be the first such system. We do not claim complete protec
 2. No network calls anywhere in `src/` or `app.py` (`config.ALLOW_NETWORK = False`).
 3. The demo shows the payload as escaped, **non-clickable** text. It never uses links, `st.link_button`, redirects or `webbrowser`.
 4. Malicious URL lists come only from reputable published datasets. They are downloaded as files and handled offline.
-5. Risk labels (SAFE / SUSPICIOUS / HIGH RISK) are **prototype policy thresholds** on a binary model's probability. They are not ground-truth classes.
+5. Risk labels (LOW RISK / SUSPICIOUS / HIGH RISK) are **prototype policy thresholds** on a binary model's probability. They are not ground-truth classes.
 
 ## Reproducibility rules
 

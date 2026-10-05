@@ -177,8 +177,8 @@ RISK_THRESHOLDS: dict[str, float] = {
 }
 
 RISK_RECOMMENDATIONS: dict[str, str] = {
-    "SAFE": ("No strong risk indicators were detected by this prototype. "
-             "Still verify the destination before entering sensitive information."),
+    "LOW RISK": ("Fewer risk indicators were detected by this prototype. This is not a "
+                 "guarantee of safety; still verify the destination before entering sensitive information."),
     "SUSPICIOUS": ("Some risk indicators were detected. Verify the destination "
                    "through an independent trusted source before proceeding."),
     "HIGH RISK": ("Multiple risk indicators were detected. Do not navigate to this "
@@ -189,14 +189,14 @@ DISCLAIMER: str = "Prototype decision support only. Do not treat this result as 
 
 
 def probability_to_risk_label(prob_malicious: float) -> str:
-    """Map a predicted malicious-class probability to SAFE / SUSPICIOUS / HIGH RISK."""
+    """Map a predicted malicious-class probability to LOW RISK / SUSPICIOUS / HIGH RISK."""
     if not 0.0 <= prob_malicious <= 1.0:
         raise ValueError(f"Probability must be between 0 and 1, got {prob_malicious}")
     if prob_malicious >= RISK_THRESHOLDS["high_risk"]:
         return "HIGH RISK"
     if prob_malicious >= RISK_THRESHOLDS["suspicious"]:
         return "SUSPICIOUS"
-    return "SAFE"
+    return "LOW RISK"
 
 
 # ---------------------------------------------------------------------------

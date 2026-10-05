@@ -12,6 +12,7 @@ Run:  python -m src.supporting_tables
 from __future__ import annotations
 
 import itertools
+import warnings
 
 import joblib
 import numpy as np
@@ -41,9 +42,9 @@ def correlation_table(train: pd.DataFrame, coefs: pd.Series) -> pd.DataFrame:
 
 def band_table(y: np.ndarray, p: np.ndarray) -> pd.DataFrame:
     lo, hi = config.RISK_THRESHOLDS["suspicious"], config.RISK_THRESHOLDS["high_risk"]
-    band = np.where(p >= hi, "HIGH RISK", np.where(p >= lo, "SUSPICIOUS", "SAFE"))
+    band = np.where(p >= hi, "HIGH RISK", np.where(p >= lo, "SUSPICIOUS", "LOW RISK"))
     rows = []
-    for name in ["SAFE", "SUSPICIOUS", "HIGH RISK"]:
+    for name in ["LOW RISK", "SUSPICIOUS", "HIGH RISK"]:
         m = band == name
         n_mal, n_ben = int((m & (y == 1)).sum()), int((m & (y == 0)).sum())
         rows.append({"band": name, "n": int(m.sum()), "n_malicious": n_mal, "n_benign": n_ben,
@@ -65,7 +66,11 @@ def main() -> None:
     corr.to_csv(config.TABLES_DIR / "d25_qr_feature_correlations_train.csv", index=False)
     print("Spearman on clean TRAIN images (n =", len(train), ")\n", corr.to_string(index=False))
 
-    p = e1["pipeline"].predict_proba(val[e1["features"]])[:, 1]
+    with warnings.catch_warnings():
+        # Spurious on Apple Silicon (NumPy 2 + Accelerate); soundness is asserted, not assumed.
+        warnings.filterwarnings("ignore", message=r".*encountered in matmul", category=RuntimeWarning)
+        p = e1["pipeline"].predict_proba(val[e1["features"]])[:, 1]
+    assert np.isfinite(p).all() and ((p >= 0) & (p <= 1)).all(), "non-finite E1 scores"
     bands = band_table(val["label"].to_numpy(), p)
     bands.to_csv(config.TABLES_DIR / "d25_e1_demo_bands_validation.csv", index=False)
     print("\nE1 demo bands on VALIDATION (n =", len(val), ")\n", bands.to_string(index=False))
