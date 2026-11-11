@@ -1,0 +1,410 @@
+{
+  "generated": "2026-11-11T10:50:54",
+  "overall": "PASS WITH WARNINGS",
+  "counts": {
+    "PASS": 53,
+    "WARN": 2,
+    "FAIL": 0,
+    "ERROR": 0
+  },
+  "git_head": "73e8f9ca4a0ade0223b6cd3cc69fea3effd522b8",
+  "git_clean_at_start": false,
+  "python": "3.10.0",
+  "platform": "macOS-26.6.2-arm64-arm-64bit",
+  "packages": {
+    "numpy": "2.2.6",
+    "pandas": "2.3.3",
+    "scikit-learn": "1.7.2",
+    "scipy": "1.15.3",
+    "joblib": "1.6.0",
+    "opencv-python": "5.0.0.93",
+    "Pillow": "12.3.0",
+    "qrcode": "8.2",
+    "tldextract": "5.3.2",
+    "shap": "0.49.1",
+    "matplotlib": "3.10.9",
+    "streamlit": "1.64.0"
+  },
+  "checks": [
+    {
+      "section": "A",
+      "check": "frozen test ids match split_freeze.json (SHA-256)",
+      "status": "PASS",
+      "detail": "f7881714c3949a10..."
+    },
+    {
+      "section": "A",
+      "check": "model unchanged since training: M1_length_only",
+      "status": "PASS",
+      "detail": "56d2b04b4d6c652c..."
+    },
+    {
+      "section": "A",
+      "check": "model unchanged since training: M1_plus_QR",
+      "status": "PASS",
+      "detail": "6f40f3af57b50025..."
+    },
+    {
+      "section": "A",
+      "check": "model unchanged since training: E1_url_only",
+      "status": "PASS",
+      "detail": "7b2a476f2999f9a6..."
+    },
+    {
+      "section": "A",
+      "check": "model unchanged since training: E2_qr_only",
+      "status": "PASS",
+      "detail": "84936dc0bf2e0911..."
+    },
+    {
+      "section": "A",
+      "check": "model unchanged since training: E3_fusion",
+      "status": "PASS",
+      "detail": "f13725cd1ef55944..."
+    },
+    {
+      "section": "A",
+      "check": "model unchanged since training: E3_reducedQR",
+      "status": "PASS",
+      "detail": "86276592a2b94513..."
+    },
+    {
+      "section": "A",
+      "check": "robustness run used the same test ids and the same E1/E3 models",
+      "status": "PASS",
+      "detail": "robustness run of 2026-09-29T23:55:55"
+    },
+    {
+      "section": "B",
+      "check": "split sizes are 1400 / 300 / 300 of 2000",
+      "status": "PASS",
+      "detail": "{'train': 1400, 'test': 300, 'val': 300}"
+    },
+    {
+      "section": "B",
+      "check": "labels are 1000/1000 overall and 150/150 in test",
+      "status": "PASS",
+      "detail": "overall {1: 1000, 0: 1000}, test {0: 150, 1: 150}"
+    },
+    {
+      "section": "B",
+      "check": "no split group appears in more than one split",
+      "status": "PASS",
+      "detail": "0 leaking, 1717 distinct"
+    },
+    {
+      "section": "B",
+      "check": "no registered domain appears in more than one split",
+      "status": "PASS",
+      "detail": "0 leaking, 1749 distinct"
+    },
+    {
+      "section": "B",
+      "check": "features.csv clean test rows are exactly the frozen ids",
+      "status": "PASS",
+      "detail": "300 clean test rows"
+    },
+    {
+      "section": "C",
+      "check": "re-score the frozen test set with the locked models",
+      "status": "PASS",
+      "detail": "300 rows, 6 models"
+    },
+    {
+      "section": "C",
+      "check": "test_predictions.csv reproduces",
+      "status": "PASS",
+      "detail": "identical to test_predictions.csv (300 rows, max numeric difference 0)"
+    },
+    {
+      "section": "C",
+      "check": "test_metrics.csv reproduces",
+      "status": "PASS",
+      "detail": "identical to test_metrics.csv (20 rows, max numeric difference 0)"
+    },
+    {
+      "section": "C",
+      "check": "mcnemar.csv reproduces",
+      "status": "PASS",
+      "detail": "identical to mcnemar.csv (3 rows, max numeric difference 0)"
+    },
+    {
+      "section": "C",
+      "check": "bootstrap_ci_cluster.csv reproduces (seeded, 2000 resamples)",
+      "status": "PASS",
+      "detail": "identical to bootstrap_ci_cluster.csv (36 rows, max numeric difference 0)"
+    },
+    {
+      "section": "C",
+      "check": "length_matched_metrics.csv reproduces from the saved subset ids",
+      "status": "PASS",
+      "detail": "n=216; identical to length_matched_metrics.csv (20 rows, max numeric difference 0)"
+    },
+    {
+      "section": "D",
+      "check": "5,400 attempts: clean + 17 conditions x 300 images",
+      "status": "PASS",
+      "detail": "5400 rows, 18 conditions including clean"
+    },
+    {
+      "section": "D",
+      "check": "zero decode mismatches (a wrong payload was never returned)",
+      "status": "PASS",
+      "detail": "{'exact': 5186, 'failure': 214}"
+    },
+    {
+      "section": "D",
+      "check": "images that did not decode exactly were never scored (D6)",
+      "status": "PASS",
+      "detail": "0 non-exact rows carry a score"
+    },
+    {
+      "section": "D",
+      "check": "E1 score is identical to the clean score for every exactly decoded image",
+      "status": "PASS",
+      "detail": "max abs difference 4.4e-16 over 5186 exactly decoded images"
+    },
+    {
+      "section": "E",
+      "check": "test ROC-AUC E1_url_only",
+      "status": "PASS",
+      "detail": "paper 0.8630, saved 0.8630"
+    },
+    {
+      "section": "E",
+      "check": "test ROC-AUC M1_length_only",
+      "status": "PASS",
+      "detail": "paper 0.6614, saved 0.6614"
+    },
+    {
+      "section": "E",
+      "check": "test ROC-AUC E2_qr_only",
+      "status": "PASS",
+      "detail": "paper 0.6688, saved 0.6688"
+    },
+    {
+      "section": "E",
+      "check": "test ROC-AUC E3_fusion",
+      "status": "PASS",
+      "detail": "paper 0.8585, saved 0.8585"
+    },
+    {
+      "section": "E",
+      "check": "length-matched ROC-AUC E2_qr_only",
+      "status": "PASS",
+      "detail": "paper 0.5273, saved 0.5273"
+    },
+    {
+      "section": "E",
+      "check": "length-matched ROC-AUC M1_length_only",
+      "status": "PASS",
+      "detail": "paper 0.4971, saved 0.4971"
+    },
+    {
+      "section": "E",
+      "check": "length-matched ROC-AUC E1_url_only",
+      "status": "PASS",
+      "detail": "paper 0.8502, saved 0.8502"
+    },
+    {
+      "section": "E",
+      "check": "length-matched ROC-AUC E3_fusion",
+      "status": "PASS",
+      "detail": "paper 0.8421, saved 0.8421"
+    },
+    {
+      "section": "E",
+      "check": "AUC difference E3_fusion - E1_url_only: point",
+      "status": "PASS",
+      "detail": "paper -0.0045, saved -0.0045"
+    },
+    {
+      "section": "E",
+      "check": "AUC difference E3_fusion - E1_url_only: ci95_low",
+      "status": "PASS",
+      "detail": "paper -0.0123, saved -0.0123"
+    },
+    {
+      "section": "E",
+      "check": "AUC difference E3_fusion - E1_url_only: ci95_high",
+      "status": "PASS",
+      "detail": "paper 0.0027, saved 0.0027"
+    },
+    {
+      "section": "E",
+      "check": "AUC difference E2_qr_only - M1_length_only: point",
+      "status": "PASS",
+      "detail": "paper 0.0073, saved 0.0073"
+    },
+    {
+      "section": "E",
+      "check": "AUC difference E2_qr_only - M1_length_only: ci95_low",
+      "status": "PASS",
+      "detail": "paper -0.0235, saved -0.0235"
+    },
+    {
+      "section": "E",
+      "check": "AUC difference E2_qr_only - M1_length_only: ci95_high",
+      "status": "PASS",
+      "detail": "paper 0.0365, saved 0.0365"
+    },
+    {
+      "section": "E",
+      "check": "E1 locked primary threshold",
+      "status": "PASS",
+      "detail": "paper 0.490, saved 0.4898"
+    },
+    {
+      "section": "E",
+      "check": "E1 recall at the locked threshold",
+      "status": "PASS",
+      "detail": "paper 0.753, saved 0.7533"
+    },
+    {
+      "section": "E",
+      "check": "E1 false-positive rate at the locked threshold",
+      "status": "PASS",
+      "detail": "paper 0.187, saved 0.1867"
+    },
+    {
+      "section": "E",
+      "check": "exact decoding is 300/300 in 16 of 17 distortion conditions",
+      "status": "PASS",
+      "detail": "16 of 17 conditions at 300/300"
+    },
+    {
+      "section": "E",
+      "check": "exact decodes under strong low resolution (of 300)",
+      "status": "PASS",
+      "detail": "paper 86, saved 86.0000"
+    },
+    {
+      "section": "E",
+      "check": "E3 false-positive rate given exact decode: clean",
+      "status": "PASS",
+      "detail": "paper 0.2333, saved 0.2333"
+    },
+    {
+      "section": "E",
+      "check": "E3 false-positive rate given exact decode: blur mild",
+      "status": "PASS",
+      "detail": "paper 0.1933, saved 0.1933"
+    },
+    {
+      "section": "E",
+      "check": "E3 false-positive rate given exact decode: blur moderate",
+      "status": "PASS",
+      "detail": "paper 0.3000, saved 0.3000"
+    },
+    {
+      "section": "E",
+      "check": "E3 false-positive rate given exact decode: blur strong",
+      "status": "PASS",
+      "detail": "paper 0.4800, saved 0.4800"
+    },
+    {
+      "section": "E",
+      "check": "E3 false-positive rate given exact decode: JPEG q30",
+      "status": "PASS",
+      "detail": "paper 0.3067, saved 0.3067"
+    },
+    {
+      "section": "E",
+      "check": "E3 false-positive rate given exact decode: perspective mild",
+      "status": "PASS",
+      "detail": "paper 0.3733, saved 0.3733"
+    },
+    {
+      "section": "E",
+      "check": "E3 false-positive rate given exact decode: perspective moderate",
+      "status": "PASS",
+      "detail": "paper 0.4600, saved 0.4600"
+    },
+    {
+      "section": "F",
+      "check": "required files exist",
+      "status": "PASS",
+      "detail": "all 26 present"
+    },
+    {
+      "section": "F",
+      "check": "decision log has D1 to D32",
+      "status": "PASS",
+      "detail": "D1-D32 all present"
+    },
+    {
+      "section": "F",
+      "check": "installed packages match requirements-lock.txt",
+      "status": "PASS",
+      "detail": "installed versions match the lock for all key packages"
+    },
+    {
+      "section": "F",
+      "check": "environment matches the one recorded at the robustness run",
+      "status": "PASS",
+      "detail": "same versions as the robustness run"
+    },
+    {
+      "section": "F",
+      "check": "config snapshot equals current config",
+      "status": "WARN",
+      "detail": "snapshot differs from src/config.py: review `diff outputs/config_snapshot.py src/config.py`"
+    },
+    {
+      "section": "F",
+      "check": "git working tree clean when the check started",
+      "status": "WARN",
+      "detail": "HEAD 73e8f9ca4a0ade0223b6cd3cc69fea3effd522b8; 2 changed/untracked paths"
+    }
+  ],
+  "sha256": {
+    "outputs/tables/bootstrap_ci_cluster.csv": "07c4aeb40bff1ff5729097b297300a91b96c9f4887c66b5625aa09d24c174334",
+    "outputs/tables/bootstrap_ci_url_level.csv": "7749b3b75471db66a8e6ede6c9eb708abb6f28af9d8112707d983b999327ea39",
+    "outputs/tables/calibration_validation.csv": "48ea6ab6da91c79e7a5c234fcd49e050dbe9e36ab4207b41cfdce250ce1f4442",
+    "outputs/tables/cv_c_selection.csv": "d0c9a5f4f2ce2dc9fb3d48f558d34b6a57c054cc70ccace15b19cdc878d5077f",
+    "outputs/tables/d25_e1_demo_bands_validation.csv": "e74fa33973d33a817db7915a186e4c41e06fb6f387194f2fbda394505d2cb49c",
+    "outputs/tables/d25_qr_feature_correlations_train.csv": "d91aabc72afa1505a99ebb7aac2e0544afed9f8420b3cf1356ea55e3b0d906f4",
+    "outputs/tables/demo_examples.csv": "29612a3274f2f530774170a9cedc9e2eccc50ccf98f7cbbf9ddd2cefd76d50d1",
+    "outputs/tables/diag_e3_feature_shifts.csv": "094183fd92e7fe83b0832744cdee3b235de40749460f1cf2b851e006773cdb33",
+    "outputs/tables/diag_e3_shift_summary.csv": "a5c389c772efedf572bfda58aab3fde7938ec688f62a0bcfb49acb3a08b2f55c",
+    "outputs/tables/diag_lowres_strong_class_within_band.csv": "a26f0bb73ff5c00a5672e511571162ddaa3897aa4d87fb98f063edb5ae9c86a3",
+    "outputs/tables/error_analysis_E3.csv": "afd4b05a7e09466a48634df783f72baa2052900cc4866a61941438304046eed6",
+    "outputs/tables/length_matched_ids.csv": "998e8169765da21afaa1556c3b5a6c882e5b05b5760c19ac9e2a3f0db6462e5c",
+    "outputs/tables/length_matched_metrics.csv": "cc1bcdbf8bb3307d0142f6774ee218d44a1e36f53eb792a2e26b2fc193c950e7",
+    "outputs/tables/mcnemar.csv": "5d2a7b5e0c8d7db3df2539c1145c58721cb9b457e35a2da9bcaadc08b6cc6b23",
+    "outputs/tables/qr_feature_length_correlation.csv": "d67dc1fc562e5ed258562021e80c10e29eb126ea9889081bb45dd21f237cc165",
+    "outputs/tables/robustness_by_label.csv": "6bfe5f6986b39541b80767ef33bef846931ed1538e804cfb5dc88b745e578bcf",
+    "outputs/tables/robustness_by_qr_version_band.csv": "613b15afe8b7f2e544aee785750a76b18fd634bb6af1a9ed5fc35f603b7a5a0d",
+    "outputs/tables/robustness_classification_exact_decode.csv": "3078c2454387ee1b274f4895ac65574d7fed66ad02ae8d15f9fc74077084eb06",
+    "outputs/tables/robustness_decode_summary.csv": "9ae07cdda1486a77d1a2f3f956089b77a8ce931192d0f77796975c753931e21c",
+    "outputs/tables/robustness_detailed_results.csv": "e81e37c03489252a2410519804014ced84f0cda4efc5917556a2612d2a47c504",
+    "outputs/tables/robustness_end_to_end_summary.csv": "b0fa6dcbaf2c06e5c4722f644a020f20c12173893d0fff7bb40e3c43ad1f3f92",
+    "outputs/tables/robustness_summary.csv": "b837fcf3aa155c8b99c8b24096f444ba278cbadc68db9100a0d1bac503e7b1a9",
+    "outputs/tables/split_audit.csv": "2cc8a6b2ec6b2ed0744fecfb411c7b33197cb9f647e22b74fd588e2e70659ec3",
+    "outputs/tables/split_candidate_scores.csv": "d43ef40135a1d2221f5a770472e4c67fb89bc25ecdb8c599703b2cd3892e9c59",
+    "outputs/tables/split_template_report.csv": "4346a4d99b662a7873520e0057a15b9bc7d277e76553678b2d0f46aaf7d70029",
+    "outputs/tables/test_metrics.csv": "34b34a3680014ce56e09c5a22613df3bba920346d8ff85666c0506e5e465bb25",
+    "outputs/tables/test_predictions.csv": "f32ca6e65a034e4dd548b9747c29cc6d1fe90d8a1bb35c2bfb3a5271399eddb1",
+    "outputs/tables/url_feature_summary.csv": "f1206cafce3b0c9f81d6d736424e8d185947552cca08f04fe46a9277a1e079ff",
+    "outputs/tables/url_shape_audit.csv": "001e11cb1150c7e8498700f37a7abe7c98070d27294c0afd7a2e907ff178558b",
+    "outputs/tables/validation_metrics.csv": "b11ca27bf1caad7b606d6a986f9513521cad5dd08a30df13a0a5badfc8fd1f0e",
+    "outputs/tables/data_cleaning_report.json": "56e5dce2b749c8f7004919c668b93d26d69c554f694bafd9a4b1432538c90b24",
+    "outputs/tables/diag_padding_control.json": "11011ef30d8c36e5c3dc081a435eddecfc2b09b59e0a04dbe54066b22ffa9faa",
+    "outputs/tables/length_matched_meta.json": "f4bb90a01da49fdc99fd5ebec5d058d5a7e9d604f087f201b6c2a400b3142254",
+    "outputs/tables/qr_generation_summary.json": "e46929cfcff03f1f8024952928e9ec853c1e1aa2c1c8f94eb39ce753a3180a02",
+    "outputs/tables/robustness_run_metadata.json": "c66443c85b57d567ad8060137b2e444b4c13d7f4af45de87d3b3459ac0f98c5c",
+    "outputs/tables/split_freeze.json": "6a5550a1a963c7b5013a544583907a123e5e26bffab664a90f5387b6db358c73",
+    "models/E1_url_only.joblib": "7b2a476f2999f9a636fb8b2cb5691e0a077b8238da63019610a156fc43ddc179",
+    "models/E2_qr_only.joblib": "84936dc0bf2e09115a1dd0fbd3bcb08e44e476b2cbd274c300360660941afec0",
+    "models/E3_fusion.joblib": "f13725cd1ef55944dd71439bea8b035b150d60501d90672cd1e08f99eb0f5d74",
+    "models/E3_reducedQR.joblib": "86276592a2b94513a3a2dc9a59da025dd6d494d38464d46df0fefe80f1591a6b",
+    "models/M1_length_only.joblib": "56d2b04b4d6c652c58822c988b799b6d951c3ff1ac30926d8d12825c13ed0247",
+    "models/M1_plus_QR.joblib": "6f40f3af57b5002529712f24ca23b9c167397bbfa272a6ca7773a09639108aca",
+    "outputs/model_manifest.json": "6be1a6741173c7af4f0da9beda4f21c80ab03a62b24a01fdbb67889b26ed70f6",
+    "data/processed/split_manifest.csv": "f03745ac7848b99a5f5e3cb440fbd984c64d2fd3799795f78bec78b2740b8077",
+    "data/processed/test_ids_frozen.csv": "f7881714c3949a102cbabff782ee5c8270b4234179320ead78a8040d393d301c",
+    "data/processed/urls.csv": "ef2ed2a27396d46221e963d419609bd3e91f668ce81d3db4240dffb49f9a840b",
+    "data/processed/features.csv": "50286d9d091c00c4e3eff60d2b4e2cac4f015de0cc7db032df3e405153afa4d4",
+    "data/processed/qr_manifest.csv": "0bbcb43e9ad8277c36e53255d1810d918c75eaf96373297494e7340fb8217179"
+  }
+}
