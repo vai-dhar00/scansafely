@@ -1,0 +1,7 @@
+error_type,category,n_rows
+false_negative,brand_in_subdomain,4
+false_negative,hosted_on_shared_platform,4
+false_negative,no_lexical_signal,2
+false_positive,benign_auth_or_keyword,2
+false_positive,benign_bare_http_domain,3
+false_positive,benign_deep_or_numeric_path,5
